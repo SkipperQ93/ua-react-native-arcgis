@@ -12,8 +12,7 @@ const LINKING_ERROR =
   '- You are not using Expo Go\n';
 
 type UaReactNativeArcgisProps = {
-  layers?: string[];
-  color?: string;
+  layers: string[];
   style: ViewStyle;
 };
 

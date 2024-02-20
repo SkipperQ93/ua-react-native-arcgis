@@ -7,7 +7,6 @@ export default function App() {
   return (
     <View style={styles.container}>
       <UaReactNativeArcgisView
-        // color="#32a852"
         layers={[
           'https://gatewaygis.qatar.ncc:6443/arcgis/rest/services/Common/Satellite_EN/MapServer',
           'https://gatewaygis.qatar.ncc:6443/arcgis/rest/services/FIFA_Maps/CUP_MAP/MapServer',
