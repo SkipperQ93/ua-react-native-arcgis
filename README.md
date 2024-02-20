@@ -15,7 +15,7 @@ import { UaReactNativeArcgisView } from "ua-react-native-arcgis";
 
 // ...
 
-<UaReactNativeArcgisView color="tomato" />
+<UaReactNativeArcgisView layers={['https://...']} />
 ```
 
 ## Contributing
