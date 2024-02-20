@@ -1,3 +1,5 @@
+import ArcGIS
+
 @objc(UaReactNativeArcgisViewManager)
 class UaReactNativeArcgisViewManager: RCTViewManager {
 

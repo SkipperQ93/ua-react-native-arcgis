@@ -1,4 +1,7 @@
 PODS:
+  - ArcGIS-Runtime-SDK-iOS (100.15.3)
+  - ArcGIS-Runtime-Toolkit-iOS (100.15.0):
+    - ArcGIS-Runtime-SDK-iOS (~> 100.15.0)
   - boost (1.83.0)
   - CocoaAsyncSocket (7.6.5)
   - DoubleConversion (1.1.6)
@@ -1113,6 +1116,7 @@ PODS:
     - React-perflogger (= 0.73.4)
   - SocketRocket (0.6.1)
   - ua-react-native-arcgis (0.1.0):
+    - ArcGIS-Runtime-Toolkit-iOS (~> 100.15.0)
     - glog
     - RCT-Folly (= 2022.05.16.00)
     - React-Core
@@ -1196,6 +1200,8 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - ArcGIS-Runtime-SDK-iOS
+    - ArcGIS-Runtime-Toolkit-iOS
     - CocoaAsyncSocket
     - Flipper
     - Flipper-Boost-iOSX
@@ -1312,6 +1318,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
+  ArcGIS-Runtime-SDK-iOS: 12e6f78c597387accb6662a77f9dcf3811321da0
+  ArcGIS-Runtime-Toolkit-iOS: c43be26bf56fc9ea25a1e18bda8d85081f5d12d4
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   CocoaAsyncSocket: 065fd1e645c7abab64f7a6a2007a48038fdc6a99
   DoubleConversion: fea03f2699887d960129cc54bba7e52542b6f953
@@ -1372,9 +1380,9 @@ SPEC CHECKSUMS:
   React-utils: 6e5ad394416482ae21831050928ae27348f83487
   ReactCommon: 840a955d37b7f3358554d819446bffcf624b2522
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
-  ua-react-native-arcgis: ab7a7a6954afd24f690ec27d451bf2b428719a90
+  ua-react-native-arcgis: 4751494e558a656f71f89d3a9ae0970f59f6e11f
   Yoga: 64cd2a583ead952b0315d5135bf39e053ae9be70
 
-PODFILE CHECKSUM: f32cf1baa227303c77ea6b931df5b7b5f855596c
+PODFILE CHECKSUM: 7ff7ea8c609e99fc1d512c01b8300837624d180a
 
 COCOAPODS: 1.14.3
