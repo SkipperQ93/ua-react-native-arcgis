@@ -1,3 +1,4 @@
+import React, { forwardRef } from 'react';
 import {
   requireNativeComponent,
   UIManager,
@@ -12,15 +13,30 @@ const LINKING_ERROR =
   '- You are not using Expo Go\n';
 
 type UaReactNativeArcgisProps = {
-  layers: string[];
-  style: ViewStyle;
+  layers?: string[];
+  style?: ViewStyle;
+};
+
+type UaReactNativeArcgisRefProps = {
+  ref?: React.Ref<typeof InternalUaReactNativeArcgisView>;
 };
 
 const ComponentName = 'UaReactNativeArcgisView';
 
-export const UaReactNativeArcgisView =
+const InternalUaReactNativeArcgisView =
   UIManager.getViewManagerConfig(ComponentName) != null
-    ? requireNativeComponent<UaReactNativeArcgisProps>(ComponentName)
+    ? requireNativeComponent<
+        UaReactNativeArcgisProps & UaReactNativeArcgisRefProps
+      >(ComponentName)
     : () => {
         throw new Error(LINKING_ERROR);
       };
+
+export const UaReactNativeArcgisView = forwardRef<
+  typeof InternalUaReactNativeArcgisView,
+  UaReactNativeArcgisProps
+>((props: UaReactNativeArcgisProps, ref) => {
+  return <InternalUaReactNativeArcgisView {...props} ref={ref} />;
+});
+
+export default UaReactNativeArcgisView;

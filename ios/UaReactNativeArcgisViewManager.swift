@@ -16,6 +16,9 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     
     var mapView: AGSMapView!
     
+    var graphicsLayer: AGSGraphicsOverlay!
+    var trackingLayer: AGSGraphicsOverlay!
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         mapView = AGSMapView();
@@ -51,9 +54,19 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
                     }
                 }
                 
+                graphicsLayer = AGSGraphicsOverlay()
+                trackingLayer = AGSGraphicsOverlay()
+                
+                map.operationalLayers.add(trackingLayer!)
+                map.operationalLayers.add(graphicsLayer!)
+                
                 mapView.map = map
             }
         }
+    }
+    
+    @objc func addPoints(pointsDict: [Dictionary<String, String>]) {
+        print(pointsDict);
     }
     
 }
