@@ -18,8 +18,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
+    top: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
   },
 });
