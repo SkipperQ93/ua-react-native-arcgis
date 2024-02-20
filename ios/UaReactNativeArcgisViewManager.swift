@@ -43,10 +43,17 @@ class UaReactNativeArcgisView : UIView {
     @objc var layers: [String] = [] {
         didSet {
             if (layers.count > 0) {
+                
                 let baseLayer = AGSArcGISTiledLayer(url: URL(string: layers[0])!)
 
-                var basemap = AGSBasemap(baseLayers: [baseLayer], referenceLayers: nil);
+                let basemap = AGSBasemap(baseLayer: baseLayer);
                 let map = AGSMap(basemap: basemap)
+                
+                for (index, layer) in layers.enumerated() {
+                    if index > 0 {
+                        map.operationalLayers.add(AGSArcGISMapImageLayer(url: URL(string: layer)!))
+                    }
+                }
                 
                 mapView.map = map
             }
