@@ -40,6 +40,7 @@ export default function App() {
               y: '5139684.227901',
               size: 50,
               attributes: {
+                isActive: true,
                 user: {
                   id: 554,
                   callSign: 'User1',
@@ -79,23 +80,10 @@ export default function App() {
           backgroundColor: 'black',
         }}
         onPress={(_event) => {
-          mapRef.current?.addPoints([
-            {
-              x: '8264924.101084',
-              y: '5139684.227901',
-              size: 50,
-              attributes: {
-                user: {
-                  id: 554,
-                  callSign: 'User1',
-                },
-                member: {
-                  id: 487,
-                },
-                pictureUrl: 'https://i.imgur.com/1QY2ldB.png',
-              },
-            },
-          ]);
+          mapRef.current?.changeOnlineStatus({
+            userId: 554,
+            onlineStatus: false,
+          });
         }}
       >
         <Text

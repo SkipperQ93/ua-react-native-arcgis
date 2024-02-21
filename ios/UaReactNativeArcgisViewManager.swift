@@ -18,6 +18,10 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
         component?.addPoints(pointsDict)
     }
     
+    @objc func changeOnlineStatus(_ node: NSNumber, userId: Int, onlineStatus: Bool) {
+        component?.changeOnlineStatus(userId: userId, onlineStatus: onlineStatus)
+    }
+    
 }
 
 class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
@@ -88,7 +92,8 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
                 let attributes = point["attributes"] as? Dictionary<String,AnyObject>,
                 let pictureUrlString = attributes["pictureUrl"] as? String,
                 let pictureUrl = URL(string: pictureUrlString),
-                let size = point["size"] as? NSNumber else {
+                let size = point["size"] as? NSNumber,
+                let isActive = attributes["isActive"] as? Bool else {
                 continue
             }
             
@@ -98,14 +103,40 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             avatarSymbol.height = CGFloat(size.floatValue)
             avatarSymbol.width = CGFloat(size.floatValue)
             
-            let outlineSymbol = AGSSimpleMarkerSymbol(style: .circle, color: .green, size: CGFloat(size.floatValue + 5))
+            let outlineSymbol = AGSSimpleMarkerSymbol(style: .circle, color: isActive ? .green : .red, size: CGFloat(size.floatValue + 5))
             
-            let pointOutlineGraphic = AGSGraphic(geometry: point, symbol: outlineSymbol)
-            let pointGraphic = AGSGraphic(geometry: point, symbol: avatarSymbol)
+            let pointOutlineGraphic = AGSGraphic(geometry: point, symbol: outlineSymbol, attributes: ["type": "outline", "data": attributes])
+            let pointGraphic = AGSGraphic(geometry: point, symbol: avatarSymbol, attributes: ["type": "outline", "data": attributes])
             
             graphicsLayer.graphics.add(pointOutlineGraphic)
             graphicsLayer.graphics.add(pointGraphic)
         }
+    }
+    
+    func changeOnlineStatus(userId: Int, onlineStatus: Bool) {
+        
+        UaReactNativeArcgisUtilities.logInfo("changeOnlineStatus: \(userId): \(onlineStatus)")
+        
+        for graphic in graphicsLayer.graphics {
+            guard let graphic = graphic as? AGSGraphic else {
+                continue
+            }
+            
+            let attributes = graphic.attributes
+            
+            guard
+                attributes["type"] as? String == "outline",
+                let data = attributes["data"] as? Dictionary<String, AnyObject>,
+                let dataUser = data["user"] as? Dictionary<String, AnyObject>,
+                let dataUserId = dataUser["id"] as? NSNumber,
+                dataUserId.intValue == userId,
+                let markerSymbol = graphic.symbol as? AGSSimpleMarkerSymbol else {
+                continue
+            }
+            
+            graphic.symbol = AGSSimpleMarkerSymbol(style: .circle, color: onlineStatus ? .green : .red, size: markerSymbol.size)
+        }
+        
     }
     
     func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {

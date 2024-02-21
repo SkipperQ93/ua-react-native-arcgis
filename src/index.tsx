@@ -33,15 +33,21 @@ const InternalUaReactNativeArcgisView =
         throw new Error(LINKING_ERROR);
       };
 
-interface UaReactNativeArcgisViewPointType {
+interface IAddPointsType {
   x: string;
   y: string;
   size: number;
   attributes: object;
 }
 
+interface IChangeOnlineStatusType {
+  userId: number;
+  onlineStatus: boolean;
+}
+
 export interface UaReactNativeArcgisViewType {
-  addPoints(points: [UaReactNativeArcgisViewPointType]): void;
+  addPoints: (props: IAddPointsType[]) => void;
+  changeOnlineStatus: (props: IChangeOnlineStatusType) => void;
 }
 
 const UaReactNativeArcgisView = forwardRef<
@@ -49,13 +55,23 @@ const UaReactNativeArcgisView = forwardRef<
   UaReactNativeArcgisProps
 >((props: UaReactNativeArcgisProps, ref) => {
   const mapRef = useRef(null);
-  const addPoints = (points: [UaReactNativeArcgisViewPointType]) => {
+
+  const addPoints = (props: IAddPointsType[]) => {
     const nodeHandle = findNodeHandle(mapRef.current);
-    UIManager.dispatchViewManagerCommand(nodeHandle, 'addPoints', [points]);
+    UIManager.dispatchViewManagerCommand(nodeHandle, 'addPoints', [props]);
+  };
+
+  const changeOnlineStatus = (props: IChangeOnlineStatusType) => {
+    const nodeHandle = findNodeHandle(mapRef.current);
+    UIManager.dispatchViewManagerCommand(nodeHandle, 'changeOnlineStatus', [
+      props.userId,
+      props.onlineStatus,
+    ]);
   };
 
   useImperativeHandle(ref, () => ({
     addPoints,
+    changeOnlineStatus,
   }));
 
   return <InternalUaReactNativeArcgisView {...props} ref={mapRef} />;
