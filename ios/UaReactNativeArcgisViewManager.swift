@@ -88,24 +88,26 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
                 let attributes = point["attributes"] as? Dictionary<String,AnyObject>,
                 let pictureUrlString = attributes["pictureUrl"] as? String,
                 let pictureUrl = URL(string: pictureUrlString),
-                let size = point["size"] as? Dictionary<String,NSNumber>,
-                let width = size["width"],
-                let height = size["height"] else {
+                let size = point["size"] as? NSNumber else {
                 continue
             }
             
             let point = AGSPoint(x: Double(x), y: Double(y), spatialReference: mapView.spatialReference)
             
             let avatarSymbol = AGSPictureMarkerSymbol(url: pictureUrl)
-            avatarSymbol.height = CGFloat(height.floatValue)
-            avatarSymbol.width = CGFloat(width.floatValue)
+            avatarSymbol.height = CGFloat(size.floatValue)
+            avatarSymbol.width = CGFloat(size.floatValue)
             
-            let pointSymbol = AGSSimpleMarkerSymbol(style: .circle, color: .orange, size: 10.0)
+            let outlineSymbol = AGSSimpleMarkerSymbol(style: .circle, color: .green, size: CGFloat(size.floatValue + 5))
             
-            pointSymbol.outline = AGSSimpleLineSymbol(style: .solid, color: .blue, width: 2.0)
-            
+//            let pointSymbol = AGSSimpleMarkerSymbol(style: .circle, color: .orange, size: 10.0)
+//            
+//            pointSymbol.outline = AGSSimpleLineSymbol(style: .solid, color: .blue, width: 2.0)
+//            
+            let pointOutlineGraphic = AGSGraphic(geometry: point, symbol: outlineSymbol)
             let pointGraphic = AGSGraphic(geometry: point, symbol: avatarSymbol)
             
+            graphicsLayer.graphics.add(pointOutlineGraphic)
             graphicsLayer.graphics.add(pointGraphic)
         }
     }

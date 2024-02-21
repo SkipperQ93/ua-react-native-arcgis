@@ -38,7 +38,7 @@ export default function App() {
             {
               x: '8264924.101084',
               y: '5139684.227901',
-              size: { width: 50, height: 50 },
+              size: 50,
               attributes: {
                 user: {
                   id: 554,
@@ -47,8 +47,52 @@ export default function App() {
                 member: {
                   id: 487,
                 },
-                pictureUrl:
-                  'https://web-summit-avenger.imgix.net/production/avatars/original/04cfd947711dadcf6e7537ae4163c150011865ed.png',
+                pictureUrl: 'https://i.imgur.com/1QY2ldB.png',
+              },
+            },
+          ]);
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            lineHeight: 21,
+            fontWeight: 'bold',
+            letterSpacing: 0.25,
+            color: 'white',
+          }}
+        >
+          {'TEST'}
+        </Text>
+      </Pressable>
+      <Pressable
+        style={{
+          position: 'absolute',
+          top: 50,
+          right: 50,
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingVertical: 12,
+          paddingHorizontal: 32,
+          borderRadius: 4,
+          elevation: 3,
+          backgroundColor: 'black',
+        }}
+        onPress={(_event) => {
+          mapRef.current?.addPoints([
+            {
+              x: '8264924.101084',
+              y: '5139684.227901',
+              size: 50,
+              attributes: {
+                user: {
+                  id: 554,
+                  callSign: 'User1',
+                },
+                member: {
+                  id: 487,
+                },
+                pictureUrl: 'https://i.imgur.com/1QY2ldB.png',
               },
             },
           ]);

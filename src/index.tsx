@@ -36,7 +36,7 @@ const InternalUaReactNativeArcgisView =
 interface UaReactNativeArcgisViewPointType {
   x: string;
   y: string;
-  size: { width: number; height: number };
+  size: number;
   attributes: object;
 }
 
