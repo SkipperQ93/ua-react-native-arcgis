@@ -13,8 +13,8 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
     @objc override static func requiresMainQueueSetup() -> Bool {
         return false
     }
-        
-    @objc func addPoints(_ node: NSNumber, pointsDict: [NSDictionary]) {
+    
+    @objc func addPoints(_ node: NSNumber, pointsDict: [Dictionary<String,AnyObject>]) {
         component?.addPoints(pointsDict)
     }
     
@@ -52,7 +52,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             if (layers.count > 0) {
                 
                 let baseLayer = AGSArcGISTiledLayer(url: URL(string: layers[0])!)
-
+                
                 let basemap = AGSBasemap(baseLayer: baseLayer);
                 let map = AGSMap(basemap: basemap)
                 
@@ -65,21 +65,55 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
                 graphicsLayer = AGSGraphicsOverlay()
                 trackingLayer = AGSGraphicsOverlay()
                 
-                map.operationalLayers.add(trackingLayer!)
-                map.operationalLayers.add(graphicsLayer!)
+                mapView.graphicsOverlays.add(graphicsLayer!)
+                mapView.graphicsOverlays.add(trackingLayer!)
                 
                 mapView.map = map
             }
         }
     }
     
-    func addPoints(_ pointsDict: [NSDictionary]) {
-        print(pointsDict);
+    func addPoints(_ pointsDict: [Dictionary<String,AnyObject>]) {
+        
+        print("addPoints", pointsDict);
+        
+        for point in pointsDict {
+            
+            guard
+                let mapView = mapView,
+                let xString = point["x"] as? String,
+                let yString = point["y"] as? String,
+                let x = Double(xString),
+                let y = Double(yString),
+                let attributes = point["attributes"] as? Dictionary<String,AnyObject>,
+                let pictureUrlString = attributes["pictureUrl"] as? String,
+                let pictureUrl = URL(string: pictureUrlString),
+                let size = point["size"] as? Dictionary<String,NSNumber>,
+                let width = size["width"],
+                let height = size["height"] else {
+                continue
+            }
+            
+            let point = AGSPoint(x: Double(x), y: Double(y), spatialReference: mapView.spatialReference)
+            
+            let avatarSymbol = AGSPictureMarkerSymbol(url: pictureUrl)
+            avatarSymbol.height = CGFloat(height.floatValue)
+            avatarSymbol.width = CGFloat(width.floatValue)
+            
+            let pointSymbol = AGSSimpleMarkerSymbol(style: .circle, color: .orange, size: 10.0)
+            
+            pointSymbol.outline = AGSSimpleLineSymbol(style: .solid, color: .blue, width: 2.0)
+            
+            let pointGraphic = AGSGraphic(geometry: point, symbol: avatarSymbol)
+            
+            graphicsLayer.graphics.add(pointGraphic)
+        }
     }
     
-//    @objc(addEvent:location:date:)
-//     func addEvent(_ name: String, location: String, date: NSNumber) -> Void {
-//       // Date is ready to use!
-//     }
+    func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
+        print(mapPoint);
+        
+    }
+    
     
 }

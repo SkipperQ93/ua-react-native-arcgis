@@ -34,7 +34,24 @@ export default function App() {
           backgroundColor: 'black',
         }}
         onPress={(_event) => {
-          mapRef.current?.addPoints();
+          mapRef.current?.addPoints([
+            {
+              x: '8264924.101084',
+              y: '5139684.227901',
+              size: { width: 50, height: 50 },
+              attributes: {
+                user: {
+                  id: 554,
+                  callSign: 'User1',
+                },
+                member: {
+                  id: 487,
+                },
+                pictureUrl:
+                  'https://web-summit-avenger.imgix.net/production/avatars/original/04cfd947711dadcf6e7537ae4163c150011865ed.png',
+              },
+            },
+          ]);
         }}
       >
         <Text

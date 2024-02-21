@@ -33,8 +33,15 @@ const InternalUaReactNativeArcgisView =
         throw new Error(LINKING_ERROR);
       };
 
+interface UaReactNativeArcgisViewPointType {
+  x: string;
+  y: string;
+  size: { width: number; height: number };
+  attributes: object;
+}
+
 export interface UaReactNativeArcgisViewType {
-  addPoints(): void;
+  addPoints(points: [UaReactNativeArcgisViewPointType]): void;
 }
 
 const UaReactNativeArcgisView = forwardRef<
@@ -42,11 +49,9 @@ const UaReactNativeArcgisView = forwardRef<
   UaReactNativeArcgisProps
 >((props: UaReactNativeArcgisProps, ref) => {
   const mapRef = useRef(null);
-  const addPoints = () => {
+  const addPoints = (points: [UaReactNativeArcgisViewPointType]) => {
     const nodeHandle = findNodeHandle(mapRef.current);
-    UIManager.dispatchViewManagerCommand(nodeHandle, 'addPoints', [
-      [{ name: 'Hassan' }],
-    ]);
+    UIManager.dispatchViewManagerCommand(nodeHandle, 'addPoints', [points]);
   };
 
   useImperativeHandle(ref, () => ({
