@@ -163,20 +163,20 @@ export default function App() {
         onPress={(_event) => {
           mapRef.current?.addPath([
             {
-              latitude: '6.635707360308848',
-              longitude: '73.2771898800748',
+              latitude: '24.890433006515337',
+              longitude: '51.250198311494565',
             },
             {
-              latitude: '-0.1619523213898585',
-              longitude: '-26.594706192605965',
+              latitude: '24.834643128734612',
+              longitude: '50.98062824506942',
             },
             {
-              latitude: '-63.744974898435046',
-              longitude: '-11.198360751453796',
+              latitude: '24.660644003290635',
+              longitude: '51.031868822610356',
             },
             {
-              latitude: '-58.06460985167166',
-              longitude: '77.90971984797541',
+              latitude: '24.74605540528406',
+              longitude: '51.267575555445944',
             },
           ]);
         }}
