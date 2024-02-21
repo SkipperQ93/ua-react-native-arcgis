@@ -3,6 +3,6 @@
 @interface RCT_EXTERN_MODULE(UaReactNativeArcgisViewManager, RCTViewManager)
 
 RCT_EXPORT_VIEW_PROPERTY(layers, NSArray)
-RCT_EXTERN_METHOD(addPoints:(NSDictionary)pointsDict)
+RCT_EXTERN_METHOD(addPoints:(nonnull NSNumber*)node pointsDict:(NSArray*) pointsDict)
 
 @end

@@ -1,26 +1,54 @@
 import * as React from 'react';
 
-import { StyleSheet, View } from 'react-native';
-import UaReactNativeArcgisView from 'ua-react-native-arcgis';
-import { useEffect, useRef } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import UaReactNativeArcgisView, {
+  type UaReactNativeArcgisViewType,
+} from 'ua-react-native-arcgis';
+import { useRef } from 'react';
 
 export default function App() {
-  const mapRef = useRef(null);
-
-  useEffect(() => {
-    console.log(mapRef.current);
-  }, []);
+  const mapRef = useRef<UaReactNativeArcgisViewType>(null);
 
   return (
     <View style={styles.container}>
       <UaReactNativeArcgisView
         ref={mapRef}
         layers={[
-          'https://gatewaygis.qatar.ncc:6443/arcgis/rest/services/Common/Satellite_EN/MapServer',
-          'https://gatewaygis.qatar.ncc:6443/arcgis/rest/services/FIFA_Maps/CUP_MAP/MapServer',
+          'https://services.arcgisonline.com/arcgis/rest/services/World_Terrain_Base/MapServer',
+          // 'https://gatewaygis.qatar.ncc:6443/arcgis/rest/services/Common/Satellite_EN/MapServer',
+          // 'https://gatewaygis.qatar.ncc:6443/arcgis/rest/services/FIFA_Maps/CUP_MAP/MapServer',
         ]}
         style={styles.box}
       />
+      <Pressable
+        style={{
+          position: 'absolute',
+          top: 50,
+          left: 50,
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingVertical: 12,
+          paddingHorizontal: 32,
+          borderRadius: 4,
+          elevation: 3,
+          backgroundColor: 'black',
+        }}
+        onPress={(_event) => {
+          mapRef.current?.addPoints();
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            lineHeight: 21,
+            fontWeight: 'bold',
+            letterSpacing: 0.25,
+            color: 'white',
+          }}
+        >
+          {'TEST'}
+        </Text>
+      </Pressable>
     </View>
   );
 }

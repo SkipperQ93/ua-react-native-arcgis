@@ -3,13 +3,21 @@ import ArcGIS
 @objc(UaReactNativeArcgisViewManager)
 class UaReactNativeArcgisViewManager: RCTViewManager {
     
+    var component: UaReactNativeArcgisView!
+    
     override func view() -> (UaReactNativeArcgisView) {
-        return UaReactNativeArcgisView()
+        component = UaReactNativeArcgisView()
+        return component
     }
     
     @objc override static func requiresMainQueueSetup() -> Bool {
         return false
     }
+        
+    @objc func addPoints(_ node: NSNumber, pointsDict: [NSDictionary]) {
+        component?.addPoints(pointsDict)
+    }
+    
 }
 
 class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
@@ -65,8 +73,13 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         }
     }
     
-    @objc func addPoints(pointsDict: [Dictionary<String, String>]) {
+    func addPoints(_ pointsDict: [NSDictionary]) {
         print(pointsDict);
     }
+    
+//    @objc(addEvent:location:date:)
+//     func addEvent(_ name: String, location: String, date: NSNumber) -> Void {
+//       // Date is ready to use!
+//     }
     
 }
