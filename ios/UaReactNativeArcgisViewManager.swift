@@ -22,6 +22,10 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
         component?.changeOnlineStatus(userId: userId, onlineStatus: onlineStatus)
     }
     
+    @objc func changeLocation(_ node: NSNumber, userId: Int, latitude: String, longitude: String) {
+        component?.changeLocation(userId: userId, latitude: latitude, longitude: longitude)
+    }
+    
 }
 
 class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
@@ -85,10 +89,10 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             
             guard
                 let mapView = mapView,
-                let xString = point["x"] as? String,
-                let yString = point["y"] as? String,
-                let x = Double(xString),
-                let y = Double(yString),
+                let latitudeString = point["latitude"] as? String,
+                let longitudeString = point["longitude"] as? String,
+                let latitude = Double(latitudeString),
+                let longitude = Double(longitudeString),
                 let attributes = point["attributes"] as? Dictionary<String,AnyObject>,
                 let pictureUrlString = attributes["pictureUrl"] as? String,
                 let pictureUrl = URL(string: pictureUrlString),
@@ -97,7 +101,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
                 continue
             }
             
-            let point = AGSPoint(x: Double(x), y: Double(y), spatialReference: mapView.spatialReference)
+            let point = AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
             
             let avatarSymbol = AGSPictureMarkerSymbol(url: pictureUrl)
             avatarSymbol.height = CGFloat(size.floatValue)
@@ -111,6 +115,9 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             graphicsLayer.graphics.add(pointOutlineGraphic)
             graphicsLayer.graphics.add(pointGraphic)
         }
+        
+        mapView.setViewpointGeometry(graphicsLayer.extent, padding: 50)
+        
     }
     
     func changeOnlineStatus(userId: Int, onlineStatus: Bool) {
@@ -139,8 +146,37 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         
     }
     
+    func changeLocation(userId: Int, latitude: String, longitude: String) {
+        
+        UaReactNativeArcgisUtilities.logInfo("changeLocation: \(userId)")
+        
+        let latitudeFloat = CGFloat((latitude as NSString).doubleValue)
+        let longitudeFloat = CGFloat((longitude as NSString).doubleValue)
+        
+        for graphic in graphicsLayer.graphics {
+            guard let graphic = graphic as? AGSGraphic else {
+                continue
+            }
+            
+            let attributes = graphic.attributes
+            
+            guard
+                let data = attributes["data"] as? Dictionary<String, AnyObject>,
+                let dataUser = data["user"] as? Dictionary<String, AnyObject>,
+                let dataUserId = dataUser["id"] as? NSNumber,
+                dataUserId.intValue == userId else {
+                continue
+            }
+            
+            let point = AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: latitudeFloat, longitude: longitudeFloat))
+            
+            graphic.geometry = point
+        }
+        
+    }
+    
     func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
-        UaReactNativeArcgisUtilities.logInfo("didTapAtScreenPoint: \(mapPoint)")
+        UaReactNativeArcgisUtilities.logInfo("didTapAtScreenPoint: latitude: \"\(mapPoint.toCLLocationCoordinate2D().latitude)\", longitude: \"\(mapPoint.toCLLocationCoordinate2D().longitude)\"")
     }
     
     

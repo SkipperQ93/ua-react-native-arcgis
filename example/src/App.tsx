@@ -36,8 +36,24 @@ export default function App() {
         onPress={(_event) => {
           mapRef.current?.addPoints([
             {
-              x: '8264924.101084',
-              y: '5139684.227901',
+              latitude: '25.933428249335368',
+              longitude: '51.25955023735113',
+              size: 50,
+              attributes: {
+                isActive: true,
+                user: {
+                  id: 553,
+                  callSign: 'User1',
+                },
+                member: {
+                  id: 487,
+                },
+                pictureUrl: 'https://i.imgur.com/1QY2ldB.png',
+              },
+            },
+            {
+              latitude: '24.861246157675627',
+              longitude: '51.11047339547602',
               size: 50,
               attributes: {
                 isActive: true,
@@ -83,6 +99,39 @@ export default function App() {
           mapRef.current?.changeOnlineStatus({
             userId: 554,
             onlineStatus: false,
+          });
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            lineHeight: 21,
+            fontWeight: 'bold',
+            letterSpacing: 0.25,
+            color: 'white',
+          }}
+        >
+          {'TEST'}
+        </Text>
+      </Pressable>
+      <Pressable
+        style={{
+          position: 'absolute',
+          top: 150,
+          left: 50,
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingVertical: 12,
+          paddingHorizontal: 32,
+          borderRadius: 4,
+          elevation: 3,
+          backgroundColor: 'black',
+        }}
+        onPress={(_event) => {
+          mapRef.current?.changeLocation({
+            userId: 554,
+            latitude: '25.15332696756259',
+            longitude: '51.005270300211855',
           });
         }}
       >
