@@ -75,7 +75,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     
     func addPoints(_ pointsDict: [Dictionary<String,AnyObject>]) {
         
-        print("addPoints", pointsDict);
+        UaReactNativeArcgisUtilities.logInfo("addPoints: \(pointsDict)")
         
         for point in pointsDict {
             
@@ -100,10 +100,6 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             
             let outlineSymbol = AGSSimpleMarkerSymbol(style: .circle, color: .green, size: CGFloat(size.floatValue + 5))
             
-//            let pointSymbol = AGSSimpleMarkerSymbol(style: .circle, color: .orange, size: 10.0)
-//            
-//            pointSymbol.outline = AGSSimpleLineSymbol(style: .solid, color: .blue, width: 2.0)
-//            
             let pointOutlineGraphic = AGSGraphic(geometry: point, symbol: outlineSymbol)
             let pointGraphic = AGSGraphic(geometry: point, symbol: avatarSymbol)
             
@@ -113,8 +109,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     }
     
     func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
-        print(mapPoint);
-        
+        UaReactNativeArcgisUtilities.logInfo("didTapAtScreenPoint: \(mapPoint)")
     }
     
     
