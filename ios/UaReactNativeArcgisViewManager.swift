@@ -26,6 +26,10 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
         component?.changeLocation(userId: userId, latitude: latitude, longitude: longitude)
     }
     
+    @objc func addPath(_ node: NSNumber, path: [Dictionary<String, String>]) {
+        component?.addPath(path: path)
+    }
+    
 }
 
 class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
@@ -173,6 +177,30 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             graphic.geometry = point
         }
         
+    }
+    
+    func addPath(path: [Dictionary<String, String>]) {
+        
+        //        let path = [
+        //            AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: 9.444143322578604, longitude: 5.875220353185171)),
+        //            AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: 5.769003831562305, longitude: -1.0527436959526062)),
+        //            AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: -1.8890085333646878, longitude: -1.8200916510034384)),
+        //            AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude:  -4.339896475224199, longitude: 2.9156033170587947))];
+        //
+        //        let processedPath = [AGSPoint]()
+        
+        trackingLayer.graphics.removeAllObjects()
+        
+        
+        for i in 0..<path.count-1 {
+            let geometry = AGSPolylineBuilder(points: [
+                AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: (path[i]["latitude"]! as NSString).doubleValue, longitude: (path[i]["longitude"]! as NSString).doubleValue)),
+                AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: (path[i+1]["latitude"]! as NSString).doubleValue, longitude: (path[i+1]["longitude"]! as NSString).doubleValue))
+            ]).toGeometry()
+            let symbol = AGSSimpleLineSymbol(style: .solid, color: .blue, width: 4, markerStyle: .arrow, markerPlacement: .end)
+            let graphic = AGSGraphic(geometry: geometry, symbol: symbol)
+            trackingLayer.graphics.add(graphic)
+        }
     }
     
     func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
