@@ -193,6 +193,35 @@ export default function App() {
           {'TEST'}
         </Text>
       </Pressable>
+      <Pressable
+        style={{
+          position: 'absolute',
+          top: 250,
+          left: 50,
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingVertical: 12,
+          paddingHorizontal: 32,
+          borderRadius: 4,
+          elevation: 3,
+          backgroundColor: 'black',
+        }}
+        onPress={(_event) => {
+          mapRef.current?.clearTracking();
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            lineHeight: 21,
+            fontWeight: 'bold',
+            letterSpacing: 0.25,
+            color: 'white',
+          }}
+        >
+          {'TEST'}
+        </Text>
+      </Pressable>
     </View>
   );
 }

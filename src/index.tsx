@@ -61,6 +61,7 @@ export interface UaReactNativeArcgisViewType {
   changeOnlineStatus: (props: IChangeOnlineStatusType) => void;
   changeLocation: (props: IChangeLocationType) => void;
   addPath: (props: IAddPathType[]) => void;
+  clearTracking: () => void;
 }
 
 const UaReactNativeArcgisView = forwardRef<
@@ -96,11 +97,17 @@ const UaReactNativeArcgisView = forwardRef<
     UIManager.dispatchViewManagerCommand(nodeHandle, 'addPath', [props]);
   };
 
+  const clearTracking = () => {
+    const nodeHandle = findNodeHandle(mapRef.current);
+    UIManager.dispatchViewManagerCommand(nodeHandle, 'clearTracking', []);
+  };
+
   useImperativeHandle(ref, () => ({
     addPoints,
     changeOnlineStatus,
     changeLocation,
     addPath,
+    clearTracking,
   }));
 
   return <InternalUaReactNativeArcgisView {...props} ref={mapRef} />;

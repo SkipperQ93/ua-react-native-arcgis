@@ -30,6 +30,10 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
         component?.addPath(path: path)
     }
     
+    @objc func clearTracking(_ node: NSNumber) {
+        component?.clearTracking()
+    }
+    
 }
 
 class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
@@ -92,7 +96,6 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         for point in pointsDict {
             
             guard
-                let mapView = mapView,
                 let latitudeString = point["latitude"] as? String,
                 let longitudeString = point["longitude"] as? String,
                 let latitude = Double(latitudeString),
@@ -181,14 +184,6 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     
     func addPath(path: [Dictionary<String, String>]) {
         
-        //        let path = [
-        //            AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: 9.444143322578604, longitude: 5.875220353185171)),
-        //            AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: 5.769003831562305, longitude: -1.0527436959526062)),
-        //            AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: -1.8890085333646878, longitude: -1.8200916510034384)),
-        //            AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude:  -4.339896475224199, longitude: 2.9156033170587947))];
-        //
-        //        let processedPath = [AGSPoint]()
-        
         trackingLayer.graphics.removeAllObjects()
         
         
@@ -201,6 +196,10 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             let graphic = AGSGraphic(geometry: geometry, symbol: symbol)
             trackingLayer.graphics.add(graphic)
         }
+    }
+    
+    func clearTracking() {
+        trackingLayer.graphics.removeAllObjects();
     }
     
     func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
