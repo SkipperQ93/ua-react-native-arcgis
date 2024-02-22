@@ -98,7 +98,7 @@ export default function App() {
         onPress={(_event) => {
           mapRef.current?.changeOnlineStatus({
             userId: 554,
-            onlineStatus: false,
+            onlineStatus: true,
           });
         }}
       >
@@ -177,6 +177,10 @@ export default function App() {
             {
               latitude: '24.74605540528406',
               longitude: '51.267575555445944',
+            },
+            {
+              latitude: '24.890433006515337',
+              longitude: '51.250198311494565',
             },
           ]);
         }}

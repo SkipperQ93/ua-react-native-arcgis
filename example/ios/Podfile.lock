@@ -1019,7 +1019,7 @@ PODS:
     - React-logger (= 0.73.4)
     - React-perflogger (= 0.73.4)
   - SocketRocket (0.6.1)
-  - ua-react-native-arcgis (0.1.0):
+  - ua-react-native-arcgis (0.1.1):
     - ArcGIS-Runtime-Toolkit-iOS (~> 100.15.0)
     - glog
     - RCT-Folly (= 2022.05.16.00)
@@ -1185,7 +1185,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   ArcGIS-Runtime-SDK-iOS: 12e6f78c597387accb6662a77f9dcf3811321da0
-  ArcGIS-Runtime-Toolkit-iOS: c43be26bf56fc9ea25a1e18bda8d85081f5d12d4
+  ArcGIS-Runtime-Toolkit-iOS: f1ac4dc8bef0c8d5691812407c1d8d35edea48b8
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   DoubleConversion: fea03f2699887d960129cc54bba7e52542b6f953
   FBLazyVector: 84f6edbe225f38aebd9deaf1540a4160b1f087d7
@@ -1234,7 +1234,7 @@ SPEC CHECKSUMS:
   React-utils: 6e5ad394416482ae21831050928ae27348f83487
   ReactCommon: 5fd44dbef85dfbafc87facae700c66d2da71b2cb
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
-  ua-react-native-arcgis: 4751494e558a656f71f89d3a9ae0970f59f6e11f
+  ua-react-native-arcgis: 47ddd9824aa1777da82389a6740252e274c6d35d
   Yoga: 64cd2a583ead952b0315d5135bf39e053ae9be70
 
 PODFILE CHECKSUM: ba48881b883a51a4f27f854e32f381ddf1e280a6
