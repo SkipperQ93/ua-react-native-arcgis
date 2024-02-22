@@ -43,6 +43,11 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     var graphicsLayer: AGSGraphicsOverlay!
     var trackingLayer: AGSGraphicsOverlay!
     
+    
+    @objc var pinpointUrlString: String = ""
+    @objc var pinpointMode: Bool = false
+
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         mapView = AGSMapView();
@@ -209,7 +214,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
                 AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: (path[i]["latitude"]! as NSString).doubleValue, longitude: (path[i]["longitude"]! as NSString).doubleValue)),
                 AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: (path[i+1]["latitude"]! as NSString).doubleValue, longitude: (path[i+1]["longitude"]! as NSString).doubleValue))
             ]).toGeometry()
-            let symbol = AGSSimpleLineSymbol(style: .solid, color: .blue, width: 4, markerStyle: .arrow, markerPlacement: .end)
+            let symbol = AGSSimpleLineSymbol(style: .solid, color: .red, width: 4, markerStyle: .arrow, markerPlacement: .end)
             let graphic = AGSGraphic(geometry: geometry, symbol: symbol)
             trackingLayer.graphics.add(graphic)
         }

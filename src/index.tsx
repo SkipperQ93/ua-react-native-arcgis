@@ -16,6 +16,8 @@ const LINKING_ERROR =
 type UaReactNativeArcgisProps = {
   layers?: string[];
   style?: ViewStyle;
+  pinpointUrlString?: string;
+  pinpointMode?: boolean;
 };
 
 type UaReactNativeArcgisInternalRefProps = {
