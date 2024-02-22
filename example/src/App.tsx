@@ -26,7 +26,7 @@ export default function App() {
           // 'https://gatewaygis.qatar.ncc:6443/arcgis/rest/services/FIFA_Maps/CUP_MAP/MapServer',
         ]}
         pinpointUrlString={'https://i.imgur.com/nn3cmIe.png'}
-        pinpointMode={true}
+        pinpointMode={false}
         onPointTap={(data) => {
           console.log('data', data.nativeEvent);
         }}

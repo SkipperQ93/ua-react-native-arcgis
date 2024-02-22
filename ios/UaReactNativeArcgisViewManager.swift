@@ -258,7 +258,13 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
                 "latitude": "\(mapPoint.toCLLocationCoordinate2D().latitude)",
                 "longitude": "\(mapPoint.toCLLocationCoordinate2D().longitude)"
             ])
-            
+        }
+        else {
+            mapView.identify(graphicsLayer, screenPoint: screenPoint, tolerance: 22, returnPopupsOnly: false) { results in
+                for result in results.graphics {
+                    print(result.attributes)
+                }
+            }
         }
     }
     
