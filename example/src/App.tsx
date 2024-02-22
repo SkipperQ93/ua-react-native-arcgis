@@ -28,7 +28,7 @@ export default function App() {
         pinpointUrlString={'https://i.imgur.com/nn3cmIe.png'}
         pinpointMode={false}
         onPointTap={(data) => {
-          console.log('data', data.nativeEvent);
+          console.log('data', JSON.stringify(data.nativeEvent));
         }}
       />
       <Pressable
@@ -46,6 +46,21 @@ export default function App() {
         }}
         onPress={(_event) => {
           mapRef.current?.addPoints([
+            {
+              latitude: '24.863053760789168',
+              longitude: '51.10819798512265',
+              attributes: {
+                isActive: true,
+                user: {
+                  id: 532,
+                  callSign: 'User1',
+                },
+                member: {
+                  id: 487,
+                },
+                pictureUrl: 'https://i.imgur.com/1QY2ldB.png',
+              },
+            },
             {
               latitude: '25.933428249335368',
               longitude: '51.25955023735113',

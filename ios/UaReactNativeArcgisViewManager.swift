@@ -265,9 +265,22 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
                              tolerance: 22,
                              returnPopupsOnly: false,
                              maximumResults: 50) { results in
+                var dataArray = [Dictionary<String,Any>]()
                 for result in results.graphics {
-                    print(result.attributes)
+                    guard
+                        let type = result.attributes["type"] as? String,
+                        type == "main",
+                        let data = result.attributes["data"] as? Dictionary<String,Any> else {
+                            continue
+                        }
+                    dataArray.append(data);
+                    
                 }
+                
+                self.onPointTap?([
+                    "dataArray": dataArray
+                ])
+                
             }
         }
     }
