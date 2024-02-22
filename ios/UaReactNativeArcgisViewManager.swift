@@ -58,6 +58,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     
     @objc var pinpointUrlString: String = ""
     @objc var pinpointMode: Bool = false
+    @objc var onPointTap: RCTBubblingEventBlock?
 
     
     override init(frame: CGRect) {
@@ -252,6 +253,11 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             graphicsLayer.graphics.add(pointGraphic)
             
             mapView.setViewpointCenter(mapPoint)
+            
+            onPointTap?([
+                "latitude": "\(mapPoint.toCLLocationCoordinate2D().latitude)",
+                "longitude": "\(mapPoint.toCLLocationCoordinate2D().longitude)"
+            ])
             
         }
     }

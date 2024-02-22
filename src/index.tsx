@@ -18,6 +18,9 @@ type UaReactNativeArcgisProps = {
   style?: ViewStyle;
   pinpointUrlString?: string;
   pinpointMode?: boolean;
+  onPointTap?: (data: {
+    nativeEvent: { latitude: string; longitude: string };
+  }) => void;
 };
 
 type UaReactNativeArcgisInternalRefProps = {

@@ -27,6 +27,9 @@ export default function App() {
         ]}
         pinpointUrlString={'https://i.imgur.com/nn3cmIe.png'}
         pinpointMode={true}
+        onPointTap={(data) => {
+          console.log('data', data.nativeEvent);
+        }}
       />
       <Pressable
         style={{
