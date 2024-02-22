@@ -3,11 +3,8 @@ import ArcGIS
 @objc(UaReactNativeArcgisViewManager)
 class UaReactNativeArcgisViewManager: RCTViewManager {
     
-    var component: UaReactNativeArcgisView!
-    
     override func view() -> (UaReactNativeArcgisView) {
-        component = UaReactNativeArcgisView()
-        return component
+        return UaReactNativeArcgisView()
     }
     
     @objc override static func requiresMainQueueSetup() -> Bool {
@@ -15,23 +12,38 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
     }
     
     @objc func addPoints(_ node: NSNumber, pointsDict: [Dictionary<String,Any>]) {
-        component?.addPoints(pointsDict)
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
+            component.addPoints(pointsDict)
+        }
     }
     
     @objc func changeOnlineStatus(_ node: NSNumber, userId: Int, onlineStatus: Bool) {
-        component?.changeOnlineStatus(userId: userId, onlineStatus: onlineStatus)
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
+            component.changeOnlineStatus(userId: userId, onlineStatus: onlineStatus)
+        }
     }
     
     @objc func changeLocation(_ node: NSNumber,  userInformation: Dictionary<String,Any>, latitude: String, longitude: String) {
-        component?.changeLocation(userInformation: userInformation, latitude: latitude, longitude: longitude)
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
+            component.changeLocation(userInformation: userInformation, latitude: latitude, longitude: longitude)
+        }
     }
     
     @objc func addPath(_ node: NSNumber, path: [Dictionary<String, String>]) {
-        component?.addPath(path: path)
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
+            component.addPath(path: path)
+        }
     }
     
     @objc func clearTracking(_ node: NSNumber) {
-        component?.clearTracking()
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
+            component.clearTracking()
+        }
     }
     
 }

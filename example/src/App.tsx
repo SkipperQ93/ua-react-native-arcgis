@@ -12,7 +12,13 @@ export default function App() {
   return (
     <View style={styles.container}>
       <UaReactNativeArcgisView
-        style={styles.box}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+        }}
         ref={mapRef}
         layers={[
           'https://services.arcgisonline.com/arcgis/rest/services/World_Terrain_Base/MapServer',
@@ -246,11 +252,5 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  box: {
-    top: 0,
-    left: 0,
-    height: '100%',
-    width: '100%',
   },
 });
