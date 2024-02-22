@@ -59,7 +59,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     @objc var pinpointUrlString: String = ""
     @objc var pinpointMode: Bool = false
     @objc var onPointTap: RCTBubblingEventBlock?
-
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -136,7 +136,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             let outlineSymbol = AGSSimpleMarkerSymbol(style: .circle, color: isActive ? .green : .red, size: avatarSize + 5)
             
             let pointOutlineGraphic = AGSGraphic(geometry: point, symbol: outlineSymbol, attributes: ["type": "outline", "data": attributes])
-            let pointGraphic = AGSGraphic(geometry: point, symbol: avatarSymbol, attributes: ["type": "outline", "data": attributes])
+            let pointGraphic = AGSGraphic(geometry: point, symbol: avatarSymbol, attributes: ["type": "main", "data": attributes])
             
             graphicsLayer.graphics.add(pointOutlineGraphic)
             graphicsLayer.graphics.add(pointGraphic)
@@ -260,7 +260,11 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             ])
         }
         else {
-            mapView.identify(graphicsLayer, screenPoint: screenPoint, tolerance: 22, returnPopupsOnly: false) { results in
+            mapView.identify(graphicsLayer,
+                             screenPoint: screenPoint,
+                             tolerance: 22,
+                             returnPopupsOnly: false,
+                             maximumResults: 50) { results in
                 for result in results.graphics {
                     print(result.attributes)
                 }
