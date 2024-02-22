@@ -225,7 +225,23 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     }
     
     func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
+        
         UaReactNativeArcgisUtilities.logInfo("didTapAtScreenPoint: latitude: \"\(mapPoint.toCLLocationCoordinate2D().latitude)\", longitude: \"\(mapPoint.toCLLocationCoordinate2D().longitude)\"")
+        
+        if pinpointMode {
+            graphicsLayer.graphics.removeAllObjects()
+            guard let url = URL(string: pinpointUrlString) else {
+                return
+            }
+            
+            let symbol = AGSPictureMarkerSymbol(url: url)
+            let pointGraphic = AGSGraphic(geometry: mapPoint, symbol: symbol)
+            
+            graphicsLayer.graphics.add(pointGraphic)
+            
+            mapView.setViewpointCenter(mapPoint)
+            
+        }
     }
     
     
