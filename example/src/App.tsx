@@ -38,7 +38,6 @@ export default function App() {
             {
               latitude: '25.933428249335368',
               longitude: '51.25955023735113',
-              size: 50,
               attributes: {
                 isActive: true,
                 user: {
@@ -54,7 +53,6 @@ export default function App() {
             {
               latitude: '24.861246157675627',
               longitude: '51.11047339547602',
-              size: 50,
               attributes: {
                 isActive: true,
                 user: {
@@ -129,7 +127,17 @@ export default function App() {
         }}
         onPress={(_event) => {
           mapRef.current?.changeLocation({
-            userId: 554,
+            userInformation: {
+              isActive: true,
+              user: {
+                id: 555,
+                callSign: 'User1',
+              },
+              member: {
+                id: 487,
+              },
+              pictureUrl: 'https://i.imgur.com/1QY2ldB.png',
+            },
             latitude: '25.15332696756259',
             longitude: '51.005270300211855',
           });

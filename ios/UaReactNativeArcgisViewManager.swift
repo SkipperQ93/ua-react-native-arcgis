@@ -14,7 +14,7 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
         return false
     }
     
-    @objc func addPoints(_ node: NSNumber, pointsDict: [Dictionary<String,AnyObject>]) {
+    @objc func addPoints(_ node: NSNumber, pointsDict: [Dictionary<String,Any>]) {
         component?.addPoints(pointsDict)
     }
     
@@ -22,8 +22,8 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
         component?.changeOnlineStatus(userId: userId, onlineStatus: onlineStatus)
     }
     
-    @objc func changeLocation(_ node: NSNumber, userId: Int, latitude: String, longitude: String) {
-        component?.changeLocation(userId: userId, latitude: latitude, longitude: longitude)
+    @objc func changeLocation(_ node: NSNumber,  userInformation: Dictionary<String,Any>, latitude: String, longitude: String) {
+        component?.changeLocation(userInformation: userInformation, latitude: latitude, longitude: longitude)
     }
     
     @objc func addPath(_ node: NSNumber, path: [Dictionary<String, String>]) {
@@ -89,9 +89,11 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         }
     }
     
-    func addPoints(_ pointsDict: [Dictionary<String,AnyObject>]) {
+    func addPoints(_ pointsDict: [Dictionary<String,Any>]) {
         
         UaReactNativeArcgisUtilities.logInfo("addPoints: \(pointsDict)")
+        
+        let avatarSize = CGFloat(50)
         
         for point in pointsDict {
             
@@ -100,10 +102,9 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
                 let longitudeString = point["longitude"] as? String,
                 let latitude = Double(latitudeString),
                 let longitude = Double(longitudeString),
-                let attributes = point["attributes"] as? Dictionary<String,AnyObject>,
+                let attributes = point["attributes"] as? Dictionary<String,Any>,
                 let pictureUrlString = attributes["pictureUrl"] as? String,
                 let pictureUrl = URL(string: pictureUrlString),
-                let size = point["size"] as? NSNumber,
                 let isActive = attributes["isActive"] as? Bool else {
                 continue
             }
@@ -111,10 +112,10 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             let point = AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
             
             let avatarSymbol = AGSPictureMarkerSymbol(url: pictureUrl)
-            avatarSymbol.height = CGFloat(size.floatValue)
-            avatarSymbol.width = CGFloat(size.floatValue)
+            avatarSymbol.height = avatarSize
+            avatarSymbol.width = avatarSize
             
-            let outlineSymbol = AGSSimpleMarkerSymbol(style: .circle, color: isActive ? .green : .red, size: CGFloat(size.floatValue + 5))
+            let outlineSymbol = AGSSimpleMarkerSymbol(style: .circle, color: isActive ? .green : .red, size: avatarSize + 5)
             
             let pointOutlineGraphic = AGSGraphic(geometry: point, symbol: outlineSymbol, attributes: ["type": "outline", "data": attributes])
             let pointGraphic = AGSGraphic(geometry: point, symbol: avatarSymbol, attributes: ["type": "outline", "data": attributes])
@@ -140,8 +141,8 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             
             guard
                 attributes["type"] as? String == "outline",
-                let data = attributes["data"] as? Dictionary<String, AnyObject>,
-                let dataUser = data["user"] as? Dictionary<String, AnyObject>,
+                let data = attributes["data"] as? Dictionary<String, Any>,
+                let dataUser = data["user"] as? Dictionary<String, Any>,
                 let dataUserId = dataUser["id"] as? NSNumber,
                 dataUserId.intValue == userId,
                 let markerSymbol = graphic.symbol as? AGSSimpleMarkerSymbol else {
@@ -153,9 +154,11 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         
     }
     
-    func changeLocation(userId: Int, latitude: String, longitude: String) {
+    func changeLocation(userInformation: Dictionary<String,Any>, latitude: String, longitude: String) {
         
-        UaReactNativeArcgisUtilities.logInfo("changeLocation: \(userId)")
+        UaReactNativeArcgisUtilities.logInfo("changeLocation: latitude: \"\(latitude)\", longitude: \"\(longitude)\" userInformation: \(userInformation)")
+        
+        var found = false
         
         let latitudeFloat = CGFloat((latitude as NSString).doubleValue)
         let longitudeFloat = CGFloat((longitude as NSString).doubleValue)
@@ -168,16 +171,30 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             let attributes = graphic.attributes
             
             guard
-                let data = attributes["data"] as? Dictionary<String, AnyObject>,
-                let dataUser = data["user"] as? Dictionary<String, AnyObject>,
+                let data = attributes["data"] as? Dictionary<String, Any>,
+                let dataUser = data["user"] as? Dictionary<String, Any>,
                 let dataUserId = dataUser["id"] as? NSNumber,
-                dataUserId.intValue == userId else {
+                let targetDataUser = userInformation["user"] as? Dictionary<String, Any>,
+                let targetDataUserId = targetDataUser["id"] as? NSNumber,
+                dataUserId.intValue == targetDataUserId.intValue else {
                 continue
             }
+            
+            found = true
             
             let point = AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: latitudeFloat, longitude: longitudeFloat))
             
             graphic.geometry = point
+        }
+        
+        if !found {
+            
+            var pointData = Dictionary<String,Any>()
+            pointData["latitude"] = latitude
+            pointData["longitude"] = longitude
+            pointData["attributes"] = userInformation
+            
+            addPoints([pointData])
         }
         
     }

@@ -36,7 +36,6 @@ const InternalUaReactNativeArcgisView =
 interface IAddPointsType {
   latitude: string;
   longitude: string;
-  size: number;
   attributes: object;
 }
 
@@ -46,7 +45,7 @@ interface IChangeOnlineStatusType {
 }
 
 interface IChangeLocationType {
-  userId: number;
+  userInformation: object;
   latitude: string;
   longitude: string;
 }
@@ -86,7 +85,7 @@ const UaReactNativeArcgisView = forwardRef<
   const changeLocation = (props: IChangeLocationType) => {
     const nodeHandle = findNodeHandle(mapRef.current);
     UIManager.dispatchViewManagerCommand(nodeHandle, 'changeLocation', [
-      props.userId,
+      props.userInformation,
       props.latitude,
       props.longitude,
     ]);
