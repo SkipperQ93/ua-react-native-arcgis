@@ -122,7 +122,7 @@ export default function App() {
         onPress={(_event) => {
           mapRef.current?.changeOnlineStatus({
             userId: 554,
-            onlineStatus: true,
+            onlineStatus: false,
           });
         }}
       >
