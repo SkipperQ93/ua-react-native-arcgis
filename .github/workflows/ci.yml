@@ -144,7 +144,7 @@ jobs:
       - name: setup-cocoapods
         uses: maxim-lobanov/setup-cocoapods@v1
         with:
-          podfile-path: myApp/Podfile.lock
+          podfile-path: example/ios/Podfile.lock
 
       - name: Install cocoapods
         if: env.turbo_cache_hit != 1 && steps.cocoapods-cache.outputs.cache-hit != 'true'
@@ -153,3 +153,8 @@ jobs:
           pod install
         env:
           NO_FLIPPER: 1
+
+      - name: Install cocoapods
+        run: |
+          cd example/ios
+          xcodebuild -workspace UaReactNativeArcgisExample.xcworkspace -scheme UaReactNativeArcgisExample -configuration Release clean archive -archivePath unsigned.xcarchive CODE_SIGN_IDENTITY=”” CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO
