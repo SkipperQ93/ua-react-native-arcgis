@@ -163,7 +163,7 @@ jobs:
         run: |
           cd example/ios/unsigned.xcarchive/Products
           mv Applications Payload
-          zip App.ipa ./Payload
+          zip -r App.ipa ./Payload
 
       # Noted For Output [main_project_module]/build/outputs/bundle/release/
       - name: Upload Release
