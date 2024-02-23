@@ -141,6 +141,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-cocoapods-
 
+      - name: setup-cocoapods
+        uses: maxim-lobanov/setup-cocoapods@v1
+        with:
+          podfile-path: myApp/Podfile.lock
+
       - name: Install cocoapods
         if: env.turbo_cache_hit != 1 && steps.cocoapods-cache.outputs.cache-hit != 'true'
         run: |
@@ -148,7 +153,3 @@ jobs:
           pod install
         env:
           NO_FLIPPER: 1
-
-      - name: Build example for iOS
-        run: |
-          yarn turbo run build:ios --cache-dir="${{ env.TURBO_CACHE_DIR }}"
