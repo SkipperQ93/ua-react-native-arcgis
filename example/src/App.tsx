@@ -21,9 +21,8 @@ export default function App() {
         }}
         ref={mapRef}
         layers={[
-          'https://services.arcgisonline.com/arcgis/rest/services/World_Terrain_Base/MapServer',
-          // 'https://gatewaygis.qatar.ncc:6443/arcgis/rest/services/Common/Satellite_EN/MapServer',
-          // 'https://gatewaygis.qatar.ncc:6443/arcgis/rest/services/FIFA_Maps/CUP_MAP/MapServer',
+          // 'https://services.arcgisonline.com/arcgis/rest/services/World_Terrain_Base/MapServer',
+          'https://services.gisqatar.org.qa/server/rest/services/Imagery/QatarSatelitte_WGS84/MapServer',
         ]}
         pinpointUrlString={'https://i.imgur.com/nn3cmIe.png'}
         pinpointMode={true}
