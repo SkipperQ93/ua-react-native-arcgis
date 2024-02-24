@@ -57,7 +57,7 @@ export default function App() {
                 member: {
                   id: 487,
                 },
-                pictureUrl: 'https://i.imgur.com/bEYVY4J_d.png',
+                pictureUrl: 'https://i.imgur.com/1QY2ldB.png',
               },
             },
             {
@@ -72,7 +72,7 @@ export default function App() {
                 member: {
                   id: 487,
                 },
-                pictureUrl: 'https://i.imgur.com/bEYVY4J_d.png',
+                pictureUrl: 'https://i.imgur.com/1QY2ldB.png',
               },
             },
             {
@@ -87,7 +87,7 @@ export default function App() {
                 member: {
                   id: 487,
                 },
-                pictureUrl: 'https://i.imgur.com/bEYVY4J_d.png',
+                pictureUrl: 'https://i.imgur.com/1QY2ldB.png',
               },
             },
           ]);
