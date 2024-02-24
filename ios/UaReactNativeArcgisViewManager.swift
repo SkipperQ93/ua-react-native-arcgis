@@ -248,6 +248,10 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             }
             
             let symbol = AGSPictureMarkerSymbol(url: url)
+            symbol.height = 50
+            symbol.width = 50
+            symbol.offsetY = 25
+            
             let pointGraphic = AGSGraphic(geometry: mapPoint, symbol: symbol)
             
             graphicsLayer.graphics.add(pointGraphic)
