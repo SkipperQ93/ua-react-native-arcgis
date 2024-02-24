@@ -63,7 +63,10 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
         mapView = AGSMapView();
+        mapView.isAttributionTextVisible = false
+        
         addSubview(mapView);
         
         
