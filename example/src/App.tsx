@@ -26,7 +26,7 @@ export default function App() {
           // 'https://gatewaygis.qatar.ncc:6443/arcgis/rest/services/FIFA_Maps/CUP_MAP/MapServer',
         ]}
         pinpointUrlString={'https://i.imgur.com/nn3cmIe.png'}
-        pinpointMode={false}
+        pinpointMode={true}
         onPointTap={(data) => {
           console.log('data', JSON.stringify(data.nativeEvent));
         }}
@@ -58,7 +58,7 @@ export default function App() {
                 member: {
                   id: 487,
                 },
-                pictureUrl: 'https://i.imgur.com/1QY2ldB.png',
+                pictureUrl: 'https://i.imgur.com/bEYVY4J_d.png',
               },
             },
             {
@@ -73,7 +73,7 @@ export default function App() {
                 member: {
                   id: 487,
                 },
-                pictureUrl: 'https://i.imgur.com/1QY2ldB.png',
+                pictureUrl: 'https://i.imgur.com/bEYVY4J_d.png',
               },
             },
             {
