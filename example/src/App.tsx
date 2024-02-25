@@ -27,7 +27,7 @@ export default function App() {
         pinpointUrlString={'https://i.imgur.com/nn3cmIe.png'}
         pinpointMode={true}
         onPointTap={(data) => {
-          console.log('data', JSON.stringify(data.nativeEvent));
+          console.log('data', JSON.stringify(data.nativeEvent.latitude));
         }}
         onMapViewLoad={() => {
           mapRef.current?.addPoints([

@@ -18,7 +18,7 @@ type UaReactNativeArcgisProps = {
   style?: ViewStyle;
   pinpointUrlString?: string;
   pinpointMode?: boolean;
-  onPointTap?: (data: { nativeEvent: object }) => void;
+  onPointTap?: (data: { nativeEvent: any }) => void;
   onMapViewLoad?: () => void;
 };
 
@@ -40,7 +40,7 @@ const InternalUaReactNativeArcgisView =
 interface IAddPointsType {
   latitude: string;
   longitude: string;
-  attributes: object;
+  attributes: any;
 }
 
 interface IChangeOnlineStatusType {
@@ -49,7 +49,7 @@ interface IChangeOnlineStatusType {
 }
 
 interface IChangeLocationType {
-  userInformation: object;
+  userInformation: any;
   latitude: string;
   longitude: string;
 }
