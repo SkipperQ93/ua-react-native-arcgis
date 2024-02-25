@@ -16,7 +16,12 @@ const LINKING_ERROR =
 type UaReactNativeArcgisProps = {
   layers?: string[];
   style?: ViewStyle;
-  pinpointUrlString?: string;
+  pinpointConfig?: {
+    url: string;
+    readMode: boolean;
+    latitude?: string;
+    longitude?: string;
+  };
   pinpointMode?: boolean;
   onPointTap?: (data: { nativeEvent: any }) => void;
   onMapViewLoad?: () => void;

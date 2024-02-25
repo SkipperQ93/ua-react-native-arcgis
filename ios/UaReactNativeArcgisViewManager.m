@@ -2,7 +2,7 @@
 
 @interface RCT_EXTERN_MODULE(UaReactNativeArcgisViewManager, RCTViewManager)
 
-RCT_EXPORT_VIEW_PROPERTY(pinpointUrlString, NSString)
+RCT_EXPORT_VIEW_PROPERTY(pinpointConfig, NSDictionary)
 RCT_EXPORT_VIEW_PROPERTY(licenseKey, NSString)
 RCT_EXPORT_VIEW_PROPERTY(pinpointMode, BOOL)
 RCT_EXPORT_VIEW_PROPERTY(layers, NSArray)

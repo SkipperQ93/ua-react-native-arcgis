@@ -50,18 +50,44 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
 
 class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     
-    var mapView: AGSMapView!
+    var mapView: AGSMapView?
     
     var graphicsLayer: AGSGraphicsOverlay!
     var trackingLayer: AGSGraphicsOverlay!
     
     
-    @objc var pinpointUrlString: String = ""
+    @objc var pinpointConfig: Dictionary<String, AnyObject> = [:] {
+        didSet {
+            guard
+                let urlString = pinpointConfig["url"] as? String,
+                let url = URL(string: urlString),
+                let latString = pinpointConfig["latitude"] as?  String,
+                let lonString = pinpointConfig["longitude"] as? String
+            else {
+                return
+            }
+            
+            let symbol = AGSPictureMarkerSymbol(url: url)
+            symbol.height = 50
+            symbol.width = 50
+            symbol.offsetY = 25
+            
+            let latitude = (latString as NSString).doubleValue
+            let longitude = (lonString as NSString).doubleValue
+            
+            let point = AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
+            let pointGraphic = AGSGraphic(geometry: point, symbol: symbol)
+            
+            graphicsLayer.graphics.add(pointGraphic)
+            
+            mapView?.setViewpointCenter(point)
+        }
+    }
     @objc var licenseKey: String = "" {
         didSet {
-            do { 
+            do {
                 let result = try AGSArcGISRuntimeEnvironment.setLicenseKey(self.licenseKey)
-                UaReactNativeArcgisUtilities.logInfo("ArcGIS License: \(result.licenseStatus)")
+                UaReactNativeArcgisUtilities.logInfo("ArcGIS License: \(result.licenseStatus.rawValue)")
             }
             catch let exception {
                 UaReactNativeArcgisUtilities.logInfo(exception.localizedDescription)
@@ -78,22 +104,23 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             }
         }
     }
-
+    
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
         mapView = AGSMapView();
+        let mapView = mapView!
         mapView.isAttributionTextVisible = false
         
         addSubview(mapView);
         
         
         mapView.translatesAutoresizingMaskIntoConstraints = false
-        let leftConstraint = NSLayoutConstraint(item: mapView!, attribute: NSLayoutConstraint.Attribute.left, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self, attribute: NSLayoutConstraint.Attribute.left, multiplier: 1, constant: 0)
-        let topConstraint = NSLayoutConstraint(item: mapView!, attribute: NSLayoutConstraint.Attribute.top, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: 0)
-        let rightConstraint = NSLayoutConstraint(item: mapView!, attribute: NSLayoutConstraint.Attribute.right, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self, attribute: NSLayoutConstraint.Attribute.right, multiplier: 1, constant: 0)
-        let bottomConstraint = NSLayoutConstraint(item: mapView!, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self, attribute: NSLayoutConstraint.Attribute.bottom, multiplier: 1, constant: 0)
+        let leftConstraint = NSLayoutConstraint(item: mapView, attribute: NSLayoutConstraint.Attribute.left, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self, attribute: NSLayoutConstraint.Attribute.left, multiplier: 1, constant: 0)
+        let topConstraint = NSLayoutConstraint(item: mapView, attribute: NSLayoutConstraint.Attribute.top, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self, attribute: NSLayoutConstraint.Attribute.top, multiplier: 1, constant: 0)
+        let rightConstraint = NSLayoutConstraint(item: mapView, attribute: NSLayoutConstraint.Attribute.right, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self, attribute: NSLayoutConstraint.Attribute.right, multiplier: 1, constant: 0)
+        let bottomConstraint = NSLayoutConstraint(item: mapView, attribute: NSLayoutConstraint.Attribute.bottom, relatedBy: NSLayoutConstraint.Relation.equal, toItem: self, attribute: NSLayoutConstraint.Attribute.bottom, multiplier: 1, constant: 0)
         NSLayoutConstraint.activate([leftConstraint, topConstraint, rightConstraint, bottomConstraint])
         
         mapView.touchDelegate = self
@@ -124,10 +151,10 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
                 graphicsLayer = AGSGraphicsOverlay()
                 trackingLayer = AGSGraphicsOverlay()
                 
-                mapView.graphicsOverlays.add(trackingLayer!)
-                mapView.graphicsOverlays.add(graphicsLayer!)
+                mapView?.graphicsOverlays.add(trackingLayer!)
+                mapView?.graphicsOverlays.add(graphicsLayer!)
                 
-                mapView.map = map
+                mapView?.map = map
             }
         }
     }
@@ -167,7 +194,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             graphicsLayer.graphics.add(pointGraphic)
         }
         
-        mapView.setViewpointGeometry(graphicsLayer.extent, padding: 50)
+        mapView?.setViewpointGeometry(graphicsLayer.extent, padding: 50)
         
     }
     
@@ -266,9 +293,13 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         
         UaReactNativeArcgisUtilities.logInfo("didTapAtScreenPoint: latitude: \"\(mapPoint.toCLLocationCoordinate2D().latitude)\", longitude: \"\(mapPoint.toCLLocationCoordinate2D().longitude)\"")
         
-        if pinpointMode {
+        if pinpointMode,
+           let readMode = pinpointConfig["readMode"] as? Bool,
+           !readMode {
             graphicsLayer.graphics.removeAllObjects()
-            guard let url = URL(string: pinpointUrlString) else {
+            guard
+                let urlString = pinpointConfig["url"] as? String,
+                let url = URL(string: urlString) else {
                 return
             }
             
@@ -281,7 +312,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             
             graphicsLayer.graphics.add(pointGraphic)
             
-            mapView.setViewpointCenter(mapPoint)
+            mapView?.setViewpointCenter(mapPoint)
             
             onPointTap?([
                 "latitude": "\(mapPoint.toCLLocationCoordinate2D().latitude)",
@@ -289,19 +320,19 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             ])
         }
         else {
-            mapView.identify(graphicsLayer,
-                             screenPoint: screenPoint,
-                             tolerance: 22,
-                             returnPopupsOnly: false,
-                             maximumResults: 50) { results in
+            mapView?.identify(graphicsLayer,
+                              screenPoint: screenPoint,
+                              tolerance: 22,
+                              returnPopupsOnly: false,
+                              maximumResults: 50) { results in
                 var dataArray = [Dictionary<String,Any>]()
                 for result in results.graphics {
                     guard
                         let type = result.attributes["type"] as? String,
                         type == "main",
                         let data = result.attributes["data"] as? Dictionary<String,Any> else {
-                            continue
-                        }
+                        continue
+                    }
                     dataArray.append(data);
                     
                 }
