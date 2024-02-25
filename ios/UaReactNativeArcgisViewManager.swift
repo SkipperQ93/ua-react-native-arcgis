@@ -66,6 +66,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             }
         }
     }
+
     
     override init(frame: CGRect) {
         super.init(frame: frame)
