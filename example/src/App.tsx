@@ -29,6 +29,55 @@ export default function App() {
         onPointTap={(data) => {
           console.log('data', JSON.stringify(data.nativeEvent));
         }}
+        onMapViewLoad={() => {
+          mapRef.current?.addPoints([
+            {
+              latitude: '24.863053760789168',
+              longitude: '51.10819798512265',
+              attributes: {
+                isActive: true,
+                user: {
+                  id: 532,
+                  callSign: 'User1',
+                },
+                member: {
+                  id: 487,
+                },
+                pictureUrl: 'https://i.imgur.com/1QY2ldB.png',
+              },
+            },
+            {
+              latitude: '25.933428249335368',
+              longitude: '51.25955023735113',
+              attributes: {
+                isActive: true,
+                user: {
+                  id: 553,
+                  callSign: 'User1',
+                },
+                member: {
+                  id: 487,
+                },
+                pictureUrl: 'https://i.imgur.com/1QY2ldB.png',
+              },
+            },
+            {
+              latitude: '24.861246157675627',
+              longitude: '51.11047339547602',
+              attributes: {
+                isActive: true,
+                user: {
+                  id: 554,
+                  callSign: 'User1',
+                },
+                member: {
+                  id: 487,
+                },
+                pictureUrl: 'https://i.imgur.com/1QY2ldB.png',
+              },
+            },
+          ]);
+        }}
       />
       <Pressable
         style={{

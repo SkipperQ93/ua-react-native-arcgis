@@ -59,6 +59,13 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     @objc var pinpointUrlString: String = ""
     @objc var pinpointMode: Bool = false
     @objc var onPointTap: RCTBubblingEventBlock?
+    @objc var onMapViewLoad: RCTBubblingEventBlock? {
+        didSet {
+            if let mapView = mapView {
+                onMapViewLoad?([:])
+            }
+        }
+    }
     
     
     override init(frame: CGRect) {
@@ -78,6 +85,9 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         NSLayoutConstraint.activate([leftConstraint, topConstraint, rightConstraint, bottomConstraint])
         
         mapView.touchDelegate = self
+        
+        onMapViewLoad?([:])
+        
     }
     
     required init?(coder: NSCoder) {
