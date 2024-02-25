@@ -1,6 +1,6 @@
 {
   "name": "ua-react-native-arcgis",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "React Native Wrapper For ArcGIS",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
