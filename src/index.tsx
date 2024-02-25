@@ -20,6 +20,7 @@ type UaReactNativeArcgisProps = {
   pinpointMode?: boolean;
   onPointTap?: (data: { nativeEvent: any }) => void;
   onMapViewLoad?: () => void;
+  licenseKey?: string;
 };
 
 type UaReactNativeArcgisInternalRefProps = {

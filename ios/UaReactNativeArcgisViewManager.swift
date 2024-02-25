@@ -57,11 +57,23 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     
     
     @objc var pinpointUrlString: String = ""
+    @objc var licenseKey: String = "" {
+        didSet {
+            do { 
+                let result = try AGSArcGISRuntimeEnvironment.setLicenseKey(self.licenseKey)
+                UaReactNativeArcgisUtilities.logInfo("ArcGIS License: \(result.licenseStatus)")
+            }
+            catch let exception {
+                UaReactNativeArcgisUtilities.logInfo(exception.localizedDescription)
+            }
+            
+        }
+    }
     @objc var pinpointMode: Bool = false
     @objc var onPointTap: RCTBubblingEventBlock?
     @objc var onMapViewLoad: RCTBubblingEventBlock? {
         didSet {
-            if let mapView = mapView {
+            if mapView != nil {
                 onMapViewLoad?([:])
             }
         }

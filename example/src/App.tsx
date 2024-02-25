@@ -78,6 +78,7 @@ export default function App() {
             },
           ]);
         }}
+        licenseKey={''}
       />
       <Pressable
         style={{
