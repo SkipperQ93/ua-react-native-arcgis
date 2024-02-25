@@ -26,11 +26,11 @@ export default function App() {
         ]}
         pinpointConfig={{
           url: 'https://i.imgur.com/nn3cmIe.png',
-          readMode: true,
+          readMode: false,
           latitude: '25.078627850921436',
           longitude: '51.06309557222483',
         }}
-        pinpointMode={true}
+        pinpointMode={false}
         onPointTap={(data) => {
           console.log('data', JSON.stringify(data.nativeEvent));
         }}
