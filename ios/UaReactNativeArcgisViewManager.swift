@@ -14,7 +14,7 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
     @objc func addPoints(_ node: NSNumber, pointsDict: [Dictionary<String,Any>]) {
         DispatchQueue.main.async {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
-            component.addPoints(pointsDict)
+            component.addPoints(pointsDict, animate: true)
         }
     }
     
@@ -50,10 +50,36 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
 
 class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     
+    class GraphicsLayerCollection {
+        
+        var graphicsLayer: AGSGraphicsOverlay
+        var trackingLayer: AGSGraphicsOverlay
+        
+        init(graphicsLayer: AGSGraphicsOverlay, trackingLayer: AGSGraphicsOverlay) {
+            self.graphicsLayer = graphicsLayer
+            self.trackingLayer = trackingLayer
+        }
+        
+    }
+    
     var mapView: AGSMapView?
     
-    var graphicsLayer: AGSGraphicsOverlay!
-    var trackingLayer: AGSGraphicsOverlay!
+    var _graphicsLayers: GraphicsLayerCollection?
+    
+    func graphicsLayers() -> GraphicsLayerCollection {
+        
+        if let _graphicsLayers {
+            return _graphicsLayers
+        }
+        
+        let _graphicsLayer = AGSGraphicsOverlay()
+        let _trackingLayer = AGSGraphicsOverlay()
+        
+        mapView?.graphicsOverlays.add(_graphicsLayer)
+        mapView?.graphicsOverlays.add(_trackingLayer)
+        
+        return GraphicsLayerCollection(graphicsLayer: _graphicsLayer, trackingLayer: _trackingLayer)
+    }
     
     
     @objc var pinpointConfig: Dictionary<String, AnyObject> = [:] {
@@ -78,7 +104,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             let point = AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: latitude, longitude: longitude))
             let pointGraphic = AGSGraphic(geometry: point, symbol: symbol)
             
-            graphicsLayer.graphics.add(pointGraphic)
+            graphicsLayers().graphicsLayer.graphics.add(pointGraphic)
             
             mapView?.setViewpointCenter(point)
         }
@@ -148,18 +174,12 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
                     }
                 }
                 
-                graphicsLayer = AGSGraphicsOverlay()
-                trackingLayer = AGSGraphicsOverlay()
-                
-                mapView?.graphicsOverlays.add(trackingLayer!)
-                mapView?.graphicsOverlays.add(graphicsLayer!)
-                
                 mapView?.map = map
             }
         }
     }
     
-    func addPoints(_ pointsDict: [Dictionary<String,Any>]) {
+    func addPoints(_ pointsDict: [Dictionary<String,Any>], animate: Bool) {
         
         UaReactNativeArcgisUtilities.logInfo("addPoints: \(pointsDict)")
         
@@ -190,11 +210,13 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             let pointOutlineGraphic = AGSGraphic(geometry: point, symbol: outlineSymbol, attributes: ["type": "outline", "data": attributes])
             let pointGraphic = AGSGraphic(geometry: point, symbol: avatarSymbol, attributes: ["type": "main", "data": attributes])
             
-            graphicsLayer.graphics.add(pointOutlineGraphic)
-            graphicsLayer.graphics.add(pointGraphic)
+            graphicsLayers().graphicsLayer.graphics.add(pointOutlineGraphic)
+            graphicsLayers().graphicsLayer.graphics.add(pointGraphic)
         }
         
-        mapView?.setViewpointGeometry(graphicsLayer.extent, padding: 50)
+        if animate {
+            mapView?.setViewpointGeometry(graphicsLayers().graphicsLayer.extent, padding: 50)
+        }
         
     }
     
@@ -202,7 +224,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         
         UaReactNativeArcgisUtilities.logInfo("changeOnlineStatus: \(userId): \(onlineStatus)")
         
-        for graphic in graphicsLayer.graphics {
+        for graphic in graphicsLayers().graphicsLayer.graphics {
             guard let graphic = graphic as? AGSGraphic else {
                 continue
             }
@@ -233,7 +255,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         let latitudeFloat = CGFloat((latitude as NSString).doubleValue)
         let longitudeFloat = CGFloat((longitude as NSString).doubleValue)
         
-        for graphic in graphicsLayer.graphics {
+        for graphic in graphicsLayers().graphicsLayer.graphics {
             guard let graphic = graphic as? AGSGraphic else {
                 continue
             }
@@ -264,14 +286,14 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             pointData["longitude"] = longitude
             pointData["attributes"] = userInformation
             
-            addPoints([pointData])
+            addPoints([pointData], animate: false)
         }
         
     }
     
     func addPath(path: [Dictionary<String, String>]) {
         
-        trackingLayer.graphics.removeAllObjects()
+        graphicsLayers().trackingLayer.graphics.removeAllObjects()
         
         
         for i in 0..<path.count-1 {
@@ -281,12 +303,12 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             ]).toGeometry()
             let symbol = AGSSimpleLineSymbol(style: .solid, color: .red, width: 4, markerStyle: .arrow, markerPlacement: .end)
             let graphic = AGSGraphic(geometry: geometry, symbol: symbol)
-            trackingLayer.graphics.add(graphic)
+            graphicsLayers().trackingLayer.graphics.add(graphic)
         }
     }
     
     func clearTracking() {
-        trackingLayer.graphics.removeAllObjects();
+        graphicsLayers().trackingLayer.graphics.removeAllObjects();
     }
     
     func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
@@ -296,7 +318,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         if pinpointMode,
            let readMode = pinpointConfig["readMode"] as? Bool,
            !readMode {
-            graphicsLayer.graphics.removeAllObjects()
+            graphicsLayers().graphicsLayer.graphics.removeAllObjects()
             guard
                 let urlString = pinpointConfig["url"] as? String,
                 let url = URL(string: urlString) else {
@@ -310,7 +332,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             
             let pointGraphic = AGSGraphic(geometry: mapPoint, symbol: symbol)
             
-            graphicsLayer.graphics.add(pointGraphic)
+            graphicsLayers().graphicsLayer.graphics.add(pointGraphic)
             
             mapView?.setViewpointCenter(mapPoint)
             
@@ -320,7 +342,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             ])
         }
         else {
-            mapView?.identify(graphicsLayer,
+            mapView?.identify(graphicsLayers().graphicsLayer,
                               screenPoint: screenPoint,
                               tolerance: 22,
                               returnPopupsOnly: false,
