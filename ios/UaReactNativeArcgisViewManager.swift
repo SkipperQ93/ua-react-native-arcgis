@@ -75,10 +75,12 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         let _graphicsLayer = AGSGraphicsOverlay()
         let _trackingLayer = AGSGraphicsOverlay()
         
-        mapView?.graphicsOverlays.add(_graphicsLayer)
         mapView?.graphicsOverlays.add(_trackingLayer)
+        mapView?.graphicsOverlays.add(_graphicsLayer)
         
-        return GraphicsLayerCollection(graphicsLayer: _graphicsLayer, trackingLayer: _trackingLayer)
+        _graphicsLayers = GraphicsLayerCollection(graphicsLayer: _graphicsLayer, trackingLayer: _trackingLayer)
+        
+        return _graphicsLayers!
     }
     
     
