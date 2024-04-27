@@ -46,6 +46,13 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
         }
     }
     
+    @objc func addPathAnimation(_ node: NSNumber, path: [Dictionary<String, String>], speed: Double) {
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
+            component.addPathAnimation(path: path, speed: speed)
+        }
+    }
+    
 }
 
 class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
@@ -307,6 +314,25 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             let graphic = AGSGraphic(geometry: geometry, symbol: symbol)
             graphicsLayers().trackingLayer.graphics.add(graphic)
         }
+    }
+    
+    func addPathAnimation(path: [Dictionary<String, String>], speed: Double) {
+        
+        graphicsLayers().trackingLayer.graphics.removeAllObjects()
+        
+        var points = [AGSPoint]()
+        
+        for i in 0..<path.count {
+            points.append(AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: (path[i]["latitude"]! as NSString).doubleValue, longitude: (path[i]["longitude"]! as NSString).doubleValue)))
+        }
+        let geometry = AGSPolylineBuilder(points: points).toGeometry()
+        let symbol = AGSSimpleLineSymbol(style: .solid, color: .red, width: 4, markerStyle: .arrow, markerPlacement: .end)
+        let graphic = AGSGraphic(geometry: geometry, symbol: symbol)
+        graphicsLayers().trackingLayer.graphics.add(graphic)
+        
+        let lineTraceAnimationHelper = AnimateLineTraceHelper(polyline: graphic.geometry as! AGSPolyline, animatingGraphic: graphic, speed: speed)
+        lineTraceAnimationHelper.startAnimation()
+                
     }
     
     func clearTracking() {

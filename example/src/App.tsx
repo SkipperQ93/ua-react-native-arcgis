@@ -268,6 +268,59 @@ export default function App() {
           {'TEST'}
         </Text>
       </Pressable>
+      <Pressable
+        style={{
+          position: 'absolute',
+          top: 250,
+          right: 50,
+          alignItems: 'center',
+          justifyContent: 'center',
+          paddingVertical: 12,
+          paddingHorizontal: 32,
+          borderRadius: 4,
+          elevation: 3,
+          backgroundColor: 'black',
+        }}
+        onPress={(_event) => {
+          mapRef.current?.addPathAnimation({
+            points: [
+              {
+                latitude: '24.890433006515337',
+                longitude: '51.250198311494565',
+              },
+              {
+                latitude: '24.834643128734612',
+                longitude: '50.98062824506942',
+              },
+              {
+                latitude: '24.660644003290635',
+                longitude: '51.031868822610356',
+              },
+              {
+                latitude: '24.74605540528406',
+                longitude: '51.267575555445944',
+              },
+              {
+                latitude: '24.890433006515337',
+                longitude: '51.250198311494565',
+              },
+            ],
+            speed: 0.1,
+          });
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 16,
+            lineHeight: 21,
+            fontWeight: 'bold',
+            letterSpacing: 0.25,
+            color: 'white',
+          }}
+        >
+          {'TEST'}
+        </Text>
+      </Pressable>
     </View>
   );
 }

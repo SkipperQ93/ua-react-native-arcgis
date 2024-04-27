@@ -65,12 +65,18 @@ interface IAddPathType {
   longitude: string;
 }
 
+interface IAddPathAnimType {
+  points: IAddPathType[];
+  speed: number;
+}
+
 export interface UaReactNativeArcgisViewType {
   addPoints: (props: IAddPointsType[]) => void;
   changeOnlineStatus: (props: IChangeOnlineStatusType) => void;
   changeLocation: (props: IChangeLocationType) => void;
   addPath: (props: IAddPathType[]) => void;
   clearTracking: () => void;
+  addPathAnimation: (props: IAddPathAnimType) => void;
 }
 
 const UaReactNativeArcgisView = forwardRef<
@@ -111,12 +117,21 @@ const UaReactNativeArcgisView = forwardRef<
     UIManager.dispatchViewManagerCommand(nodeHandle, 'clearTracking', []);
   };
 
+  const addPathAnimation = (props: IAddPathAnimType) => {
+    const nodeHandle = findNodeHandle(mapRef.current);
+    UIManager.dispatchViewManagerCommand(nodeHandle, 'addPathAnimation', [
+      props.points,
+      props.speed,
+    ]);
+  };
+
   useImperativeHandle(ref, () => ({
     addPoints,
     changeOnlineStatus,
     changeLocation,
     addPath,
     clearTracking,
+    addPathAnimation,
   }));
 
   return <InternalUaReactNativeArcgisView {...props} ref={mapRef} />;

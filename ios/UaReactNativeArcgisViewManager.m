@@ -13,5 +13,6 @@ RCT_EXTERN_METHOD(changeOnlineStatus:(nonnull NSNumber*)node userId:(int)userId 
 RCT_EXTERN_METHOD(changeLocation:(nonnull NSNumber*)node userInformation:(NSDictionary*)userInformation latitude:(NSString*)latitude longitude:(NSString)longitude)
 RCT_EXTERN_METHOD(addPath:(nonnull NSNumber*)node path:(NSArray*)path)
 RCT_EXTERN_METHOD(clearTracking:(nonnull NSNumber*)node)
+RCT_EXTERN_METHOD(addPathAnimation:(nonnull NSNumber*)node path:(NSArray*)path speed:(double)speed)
 
 @end
