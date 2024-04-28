@@ -326,7 +326,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             points.append(AGSPoint(clLocationCoordinate2D: CLLocationCoordinate2D(latitude: (path[i]["latitude"]! as NSString).doubleValue, longitude: (path[i]["longitude"]! as NSString).doubleValue)))
         }
         let geometry = AGSPolylineBuilder(points: points).toGeometry()
-        let symbol = AGSSimpleLineSymbol(style: .solid, color: .red, width: 4, markerStyle: .arrow, markerPlacement: .end)
+        let symbol = AGSSimpleLineSymbol(style: .solid, color: .red, width: 4)
         let graphic = AGSGraphic(geometry: geometry, symbol: symbol)
         graphicsLayers().trackingLayer.graphics.add(graphic)
         
