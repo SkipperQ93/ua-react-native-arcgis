@@ -314,6 +314,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             let graphic = AGSGraphic(geometry: geometry, symbol: symbol)
             graphicsLayers().trackingLayer.graphics.add(graphic)
         }
+        mapView?.setViewpointGeometry(graphicsLayers().trackingLayer.extent, padding: 50)
     }
     
     func addPathAnimation(path: [Dictionary<String, String>], speed: Double) {
@@ -329,6 +330,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         let symbol = AGSSimpleLineSymbol(style: .solid, color: .red, width: 4)
         let graphic = AGSGraphic(geometry: geometry, symbol: symbol)
         graphicsLayers().trackingLayer.graphics.add(graphic)
+        mapView?.setViewpointGeometry(graphicsLayers().trackingLayer.extent, padding: 50)
         
         let lineTraceAnimationHelper = AnimateLineTraceHelper(polyline: graphic.geometry as! AGSPolyline, animatingGraphic: graphic, speed: speed)
         lineTraceAnimationHelper.startAnimation()
