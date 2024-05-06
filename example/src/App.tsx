@@ -14,7 +14,7 @@ export default function App() {
       <UaReactNativeArcgisView
         onLog={(data) => {
           if (data.nativeEvent) {
-            console.log('MapLog:', data.nativeEvent.key, data.nativeEvent.log);
+            console.log('MapLog:', data.nativeEvent.key);
           }
         }}
         style={{
