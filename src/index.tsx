@@ -26,6 +26,12 @@ type UaReactNativeArcgisProps = {
   onPointTap?: (data: { nativeEvent: any }) => void;
   onMapViewLoad?: () => void;
   licenseKey?: string;
+  onLog?: (data: {
+    nativeEvent: {
+      key: 'tap' | 'license' | 'addPoints' | 'onlineStatus' | 'changeLocation';
+      log: string;
+    };
+  }) => void;
 };
 
 type UaReactNativeArcgisInternalRefProps = {
