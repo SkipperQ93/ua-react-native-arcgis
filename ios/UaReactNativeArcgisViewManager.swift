@@ -12,44 +12,51 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
     }
     
     @objc func addPoints(_ node: NSNumber, pointsDict: [Dictionary<String,Any>]) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.sync {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
-            component.addPoints(pointsDict, animate: true)
+            component.addPoints(pointsDict)
         }
     }
     
     @objc func changeOnlineStatus(_ node: NSNumber, userId: Int, onlineStatus: Bool) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.sync {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
             component.changeOnlineStatus(userId: userId, onlineStatus: onlineStatus)
         }
     }
     
     @objc func changeLocation(_ node: NSNumber,  userInformation: Dictionary<String,Any>, latitude: String, longitude: String) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.sync {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
             component.changeLocation(userInformation: userInformation, latitude: latitude, longitude: longitude)
         }
     }
     
     @objc func addPath(_ node: NSNumber, path: [Dictionary<String, String>]) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.sync {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
             component.addPath(path: path)
         }
     }
     
     @objc func clearTracking(_ node: NSNumber) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.sync {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
             component.clearTracking()
         }
     }
     
     @objc func addPathAnimation(_ node: NSNumber, path: [Dictionary<String, String>], speed: Double) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.sync {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
             component.addPathAnimation(path: path, speed: speed)
+        }
+    }
+    
+    @objc func zoomToGraphicsLayer(_ node: NSNumber) {
+        DispatchQueue.main.sync {
+            let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
+            component.zoomToGraphicsLayer()
         }
     }
     
@@ -122,10 +129,10 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         didSet {
             do {
                 let result = try AGSArcGISRuntimeEnvironment.setLicenseKey(self.licenseKey)
-                UaReactNativeArcgisUtilities.logInfo("ArcGIS License: \(result.licenseStatus.rawValue)")
+                onLog?(["key":"license", "log":"\(result.licenseStatus.rawValue)"])
             }
             catch let exception {
-                UaReactNativeArcgisUtilities.logInfo(exception.localizedDescription)
+                onLog?(["key":"license", "log":exception.localizedDescription])
             }
             
         }
@@ -139,6 +146,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             }
         }
     }
+    @objc var onLog: RCTBubblingEventBlock?
     
     
     override init(frame: CGRect) {
@@ -188,9 +196,9 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         }
     }
     
-    func addPoints(_ pointsDict: [Dictionary<String,Any>], animate: Bool) {
+    func addPoints(_ pointsDict: [Dictionary<String,Any>]) {
         
-        UaReactNativeArcgisUtilities.logInfo("addPoints: \(pointsDict)")
+        onLog?(["key":"addPoints", "log":"\(pointsDict)"])
         
         let avatarSize = CGFloat(50)
         
@@ -223,15 +231,11 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             graphicsLayers().graphicsLayer.graphics.add(pointGraphic)
         }
         
-        if animate {
-            mapView?.setViewpointGeometry(graphicsLayers().graphicsLayer.extent, padding: 50)
-        }
-        
     }
     
     func changeOnlineStatus(userId: Int, onlineStatus: Bool) {
         
-        UaReactNativeArcgisUtilities.logInfo("changeOnlineStatus: \(userId): \(onlineStatus)")
+        onLog?(["key":"onlineStatus", "log":"\(userId): \(onlineStatus)"])
         
         for graphic in graphicsLayers().graphicsLayer.graphics {
             guard let graphic = graphic as? AGSGraphic else {
@@ -257,7 +261,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     
     func changeLocation(userInformation: Dictionary<String,Any>, latitude: String, longitude: String) {
         
-        UaReactNativeArcgisUtilities.logInfo("changeLocation: latitude: \"\(latitude)\", longitude: \"\(longitude)\" userInformation: \(userInformation)")
+        onLog?(["key":"changeLocation", "log":"latitude: \"\(latitude)\", longitude: \"\(longitude)\" userInformation: \(userInformation)"])
         
         var found = false
         
@@ -295,7 +299,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             pointData["longitude"] = longitude
             pointData["attributes"] = userInformation
             
-            addPoints([pointData], animate: false)
+            addPoints([pointData])
         }
         
     }
@@ -337,13 +341,17 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
                 
     }
     
+    func zoomToGraphicsLayer() {
+        mapView?.setViewpointGeometry(graphicsLayers().graphicsLayer.extent, padding: 50)
+    }
+    
     func clearTracking() {
         graphicsLayers().trackingLayer.graphics.removeAllObjects();
     }
     
     func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
         
-        UaReactNativeArcgisUtilities.logInfo("didTapAtScreenPoint: latitude: \"\(mapPoint.toCLLocationCoordinate2D().latitude)\", longitude: \"\(mapPoint.toCLLocationCoordinate2D().longitude)\"")
+        onLog?(["key":"tap", "log":"latitude: \"\(mapPoint.toCLLocationCoordinate2D().latitude)\", longitude: \"\(mapPoint.toCLLocationCoordinate2D().longitude)\""])
         
         if pinpointMode,
            let readMode = pinpointConfig["readMode"] as? Bool,

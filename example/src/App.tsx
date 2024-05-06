@@ -12,6 +12,11 @@ export default function App() {
   return (
     <View style={styles.container}>
       <UaReactNativeArcgisView
+        onLog={(data) => {
+          if (data.nativeEvent) {
+            console.log('MapLog:', data.nativeEvent.key, data.nativeEvent.log);
+          }
+        }}
         style={{
           position: 'absolute',
           top: 0,
@@ -31,12 +36,12 @@ export default function App() {
           longitude: '51.06309557222483',
         }}
         pinpointMode={false}
-        onPointTap={(data) => {
-          console.log('data', JSON.stringify(data.nativeEvent));
-        }}
-        onMapViewLoad={() => {
-          console.log('Map Loaded.');
-        }}
+        // onPointTap={(data) => {
+        //   console.log('data', JSON.stringify(data.nativeEvent));
+        // }}
+        // onMapViewLoad={() => {
+        //   console.log('Map Loaded.');
+        // }}
         licenseKey={''}
       />
       <Pressable

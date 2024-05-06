@@ -11,8 +11,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UaReactNativeArcgisUtilities : NSObject
 
-+ (void) logInfo:(NSString*) string;
-
 @end
 
 NS_ASSUME_NONNULL_END

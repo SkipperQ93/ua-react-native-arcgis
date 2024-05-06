@@ -10,8 +10,4 @@
 
 @implementation UaReactNativeArcgisUtilities
 
-+ (void) logInfo:(NSString*) string {
-    RCTLogWarn(@"%@", string);
-}
-
 @end
