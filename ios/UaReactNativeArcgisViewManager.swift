@@ -14,7 +14,7 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
     @objc func addPoints(_ node: NSNumber, pointsDict: [Dictionary<String,Any>]) {
         DispatchQueue.main.sync {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
-            component.addPoints(pointsDict)
+            component.addPoints(pointsDict, animate: true)
         }
     }
     
@@ -196,7 +196,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         }
     }
     
-    func addPoints(_ pointsDict: [Dictionary<String,Any>]) {
+    func addPoints(_ pointsDict: [Dictionary<String,Any>], animate: Bool) {
         
         onLog?(["key":"addPoints", "log":"\(pointsDict)"])
         
@@ -229,6 +229,10 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             
             graphicsLayers().graphicsLayer.graphics.add(pointOutlineGraphic)
             graphicsLayers().graphicsLayer.graphics.add(pointGraphic)
+        }
+        
+        if (animate) {
+            mapView?.setViewpointGeometry(graphicsLayers().graphicsLayer.extent, padding: 50)
         }
         
     }
@@ -299,7 +303,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             pointData["longitude"] = longitude
             pointData["attributes"] = userInformation
             
-            addPoints([pointData])
+            addPoints([pointData], animate: false)
         }
         
     }
