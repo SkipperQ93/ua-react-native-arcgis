@@ -53,13 +53,6 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
         }
     }
     
-    @objc func zoomToGraphicsLayer(_ node: NSNumber) {
-        DispatchQueue.main.sync {
-            let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
-            component.zoomToGraphicsLayer()
-        }
-    }
-    
 }
 
 class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
@@ -343,10 +336,6 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         let lineTraceAnimationHelper = AnimateLineTraceHelper(polyline: graphic.geometry as! AGSPolyline, animatingGraphic: graphic, speed: speed)
         lineTraceAnimationHelper.startAnimation()
                 
-    }
-    
-    func zoomToGraphicsLayer() {
-        mapView?.setViewpointGeometry(graphicsLayers().graphicsLayer.extent, padding: 50)
     }
     
     func clearTracking() {

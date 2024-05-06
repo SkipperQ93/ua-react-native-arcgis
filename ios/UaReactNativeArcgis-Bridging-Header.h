@@ -2,4 +2,3 @@
 #import <React/RCTViewManager.h>
 #import <React/RCTBridge.h>
 #import <React/RCTUIManager.h>
-#import "UaReactNativeArcgisUtilities.h"
