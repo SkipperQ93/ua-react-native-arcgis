@@ -14,6 +14,5 @@ RCT_EXTERN_METHOD(changeLocation:(nonnull NSNumber*)node userInformation:(NSDict
 RCT_EXTERN_METHOD(addPath:(nonnull NSNumber*)node path:(NSArray*)path)
 RCT_EXTERN_METHOD(clearTracking:(nonnull NSNumber*)node)
 RCT_EXTERN_METHOD(addPathAnimation:(nonnull NSNumber*)node path:(NSArray*)path speed:(double)speed)
-RCT_EXPORT_VIEW_PROPERTY(onLog, RCTBubblingEventBlock)
 
 @end
