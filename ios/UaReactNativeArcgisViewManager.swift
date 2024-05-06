@@ -232,7 +232,9 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         }
         
         if (animate) {
-            mapView?.setViewpointGeometry(graphicsLayers().graphicsLayer.extent, padding: 50)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.mapView?.setViewpointGeometry(self.graphicsLayers().graphicsLayer.extent, padding: 50)
+            }
         }
         
     }
@@ -342,7 +344,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         
         let lineTraceAnimationHelper = AnimateLineTraceHelper(polyline: graphic.geometry as! AGSPolyline, animatingGraphic: graphic, speed: speed)
         lineTraceAnimationHelper.startAnimation()
-                
+        
     }
     
     func zoomToGraphicsLayer() {
@@ -414,20 +416,20 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
 
 
 class AnimateLineTraceHelper {
-
+    
     private var polyline:AGSPolyline
     private var animatingGraphic:AGSGraphic
     private var speed:Double
-
+    
     var name:String = "Unnamed"
-
+    
     private var polylineBuilder:AGSPolylineBuilder
     private var maxDeviation:Double = 0
-
+    
     convenience init(polyline: AGSPolyline, animatingGraphic: AGSGraphic, speed: Double) {
         self.init(polyline: polyline, animatingGraphic: animatingGraphic, speed: speed, generalize: false)
     }
-
+    
     init(polyline: AGSPolyline, animatingGraphic: AGSGraphic, speed: Double, generalize:Bool) {
         
         self.polyline = polyline
@@ -436,13 +438,13 @@ class AnimateLineTraceHelper {
         self.speed = speed
         
         self.maxDeviation = generalize ? 500 : 0 // min(10, self.polylineLength/500)
-
+        
         if let firstPoint = self.polyline.parts.array().first?.startPoint {
             self.polylineBuilder = AGSPolylineBuilder(points: [firstPoint])
         } else {
             self.polylineBuilder = AGSPolylineBuilder(spatialReference: polyline.spatialReference)
         }
-
+        
     }
     
     //MARK: - Start animation
@@ -451,16 +453,16 @@ class AnimateLineTraceHelper {
         let length = AGSGeometryEngine.length(of: polyline)
         let duration = length/speed
         let startTime = Date()
-
+        
         AnimationManager.animate(animationBlock: { () -> Bool in
             let doneFactor = Date().timeIntervalSince(startTime) / duration
             guard let newLocation = AGSGeometryEngine.point(along: self.polyline, distance: length * doneFactor) else {
                 print("New location is not a valid point! Donefactor = \(doneFactor)")
                 return true
             }
-
+            
             self.polylineBuilder.add(newLocation)
-
+            
             //assign the geometry to the polyline graphic
             if self.maxDeviation > 0 {
                 let generalizedGeom = AGSGeometryEngine.generalizeGeometry(self.polylineBuilder.toGeometry(), maxDeviation: self.maxDeviation, removeDegenerateParts: true)
@@ -468,11 +470,11 @@ class AnimateLineTraceHelper {
             } else {
                 self.animatingGraphic.geometry = self.polylineBuilder.toGeometry()
             }
-
+            
             if !self.animatingGraphic.isVisible {
                 self.animatingGraphic.isVisible = true
             }
-
+            
             return doneFactor >= 1
         }, completion: nil)
     }
@@ -486,23 +488,23 @@ private class AnimationBlock:Hashable, Equatable {
     private let block:()->Bool
     private var completion:(()->Void)? = nil
     fileprivate var completed = false
-
+    
     init(block: @escaping ()->Bool, completion:(()->Void)?) {
         self.block = block
         self.completion = completion
     }
-
+    
     fileprivate func executeAsync() {
         DispatchQueue.main.async { [weak self] in
             guard let thisAnimBlock = self else {
                 return
             }
-
+            
             guard !thisAnimBlock.completed else {
                 print("------- Trying to run completed animation block")
                 return
             }
-
+            
             if thisAnimBlock.block() {
                 thisAnimBlock.completed = true
                 AnimationManager.stopAnimating(animationBlock: thisAnimBlock)
@@ -510,11 +512,11 @@ private class AnimationBlock:Hashable, Equatable {
             }
         }
     }
-
+    
     var hashValue: Int {
         return key.hashValue
     }
-
+    
     static func ==(lhs:AnimationBlock, rhs:AnimationBlock) -> Bool {
         return lhs.key == rhs.key
     }
@@ -527,11 +529,11 @@ class AnimationManager {
         case paused
         case forceStopped
     }
-
+    
     private static var timer:Timer?
-
+    
     private static var animationBlocks:Set<AnimationBlock> = Set()
-
+    
     private static var state:AnimationState = .unstarted {
         didSet {
             switch state {
@@ -549,7 +551,7 @@ class AnimationManager {
             }
         }
     }
-
+    
     static func animate(animationBlock block:@escaping ()->Bool, completion completionHandler:(()->Void)?) {
         let animationBlock = AnimationBlock(block: block, completion: completionHandler)
         AnimationManager.animationBlocks.insert(animationBlock)
@@ -557,32 +559,32 @@ class AnimationManager {
             AnimationManager.timer = getNewTimer()
         }
     }
-
+    
     static func pauseAnimations() {
         AnimationManager.state = .paused
     }
-
+    
     static func forceStopAnimations() {
         AnimationManager.state = .forceStopped
     }
-
+    
     static func reset() {
         AnimationManager.state = .unstarted
     }
-
+    
     static func resumeAnimations() {
         AnimationManager.timer = getNewTimer()
     }
-
+    
     static var isPaused:Bool {
         return AnimationManager.state == .paused
     }
-
+    
     private static func getNewTimer() -> Timer? {
         guard AnimationManager.state != .forceStopped else {
             return nil
         }
-
+        
         AnimationManager.state = .animating
         return Timer.scheduledTimer(withTimeInterval: 1/_fps, repeats: true, block: { (theTimer) in
             for block in AnimationManager.animationBlocks {
@@ -590,7 +592,7 @@ class AnimationManager {
             }
         })
     }
-
+    
     fileprivate static func stopAnimating(animationBlock block:AnimationBlock) {
         block.completed = true
         AnimationManager.animationBlocks.remove(block)
