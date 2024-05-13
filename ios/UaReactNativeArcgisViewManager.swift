@@ -200,6 +200,10 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         
         onLog?(["key":"addPoints", "log":"\(pointsDict)"])
         
+        if (animate) {
+            graphicsLayers().graphicsLayer.graphics.removeAllObjects()
+        }
+        
         let avatarSize = CGFloat(50)
         
         for point in pointsDict {
