@@ -28,7 +28,15 @@ type UaReactNativeArcgisProps = {
   licenseKey?: string;
   onLog?: (data: {
     nativeEvent: {
-      key: 'tap' | 'license' | 'addPoints' | 'onlineStatus' | 'changeLocation';
+      key:
+        | 'tap'
+        | 'license'
+        | 'addPoints'
+        | 'onlineStatus'
+        | 'changeLocation'
+        | 'clearTracking'
+        | 'zoom'
+        | 'removePoint';
       log: string;
     };
   }) => void;
@@ -76,6 +84,10 @@ interface IAddPathAnimType {
   speed: number;
 }
 
+interface IUserIDType {
+  userId: number;
+}
+
 export interface UaReactNativeArcgisViewType {
   addPoints: (props: IAddPointsType[]) => void;
   changeOnlineStatus: (props: IChangeOnlineStatusType) => void;
@@ -83,6 +95,9 @@ export interface UaReactNativeArcgisViewType {
   addPath: (props: IAddPathType[]) => void;
   clearTracking: () => void;
   addPathAnimation: (props: IAddPathAnimType) => void;
+  zoomToGraphicsLayer: () => void;
+  addPointsWithoutAnimation: (props: IAddPointsType[]) => void;
+  removePoint: (props: IUserIDType) => void;
 }
 
 const UaReactNativeArcgisView = forwardRef<
@@ -131,6 +146,27 @@ const UaReactNativeArcgisView = forwardRef<
     ]);
   };
 
+  const zoomToGraphicsLayer = () => {
+    const nodeHandle = findNodeHandle(mapRef.current);
+    UIManager.dispatchViewManagerCommand(nodeHandle, 'zoomToGraphicsLayer', []);
+  };
+
+  const addPointsWithoutAnimation = (props: IAddPointsType[]) => {
+    const nodeHandle = findNodeHandle(mapRef.current);
+    UIManager.dispatchViewManagerCommand(
+      nodeHandle,
+      'addPointsWithoutAnimation',
+      [props]
+    );
+  };
+
+  const removePoint = (props: IUserIDType) => {
+    const nodeHandle = findNodeHandle(mapRef.current);
+    UIManager.dispatchViewManagerCommand(nodeHandle, 'removePoint', [
+      props.userId,
+    ]);
+  };
+
   useImperativeHandle(ref, () => ({
     addPoints,
     changeOnlineStatus,
@@ -138,6 +174,9 @@ const UaReactNativeArcgisView = forwardRef<
     addPath,
     clearTracking,
     addPathAnimation,
+    zoomToGraphicsLayer,
+    addPointsWithoutAnimation,
+    removePoint,
   }));
 
   return <InternalUaReactNativeArcgisView {...props} ref={mapRef} />;

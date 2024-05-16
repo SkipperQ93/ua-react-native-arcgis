@@ -16,5 +16,7 @@ RCT_EXTERN_METHOD(clearTracking:(nonnull NSNumber*)node)
 RCT_EXTERN_METHOD(addPathAnimation:(nonnull NSNumber*)node path:(NSArray*)path speed:(double)speed)
 RCT_EXPORT_VIEW_PROPERTY(onLog, RCTBubblingEventBlock)
 RCT_EXTERN_METHOD(zoomToGraphicsLayer:(nonnull NSNumber*)node)
+RCT_EXTERN_METHOD(addPointsWithoutAnimation:(nonnull NSNumber*)node pointsDict:(NSArray*)pointsDict)
+RCT_EXTERN_METHOD(removePoint:(nonnull NSNumber*)node userId:(int)userId)
 
 @end

@@ -12,51 +12,65 @@ class UaReactNativeArcgisViewManager: RCTViewManager {
     }
     
     @objc func addPoints(_ node: NSNumber, pointsDict: [Dictionary<String,Any>]) {
-        DispatchQueue.main.sync {
+        DispatchQueue.main.async {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
             component.addPoints(pointsDict, animate: true)
         }
     }
     
     @objc func changeOnlineStatus(_ node: NSNumber, userId: Int, onlineStatus: Bool) {
-        DispatchQueue.main.sync {
+        DispatchQueue.main.async {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
             component.changeOnlineStatus(userId: userId, onlineStatus: onlineStatus)
         }
     }
     
     @objc func changeLocation(_ node: NSNumber,  userInformation: Dictionary<String,Any>, latitude: String, longitude: String) {
-        DispatchQueue.main.sync {
+        DispatchQueue.main.async {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
             component.changeLocation(userInformation: userInformation, latitude: latitude, longitude: longitude)
         }
     }
     
     @objc func addPath(_ node: NSNumber, path: [Dictionary<String, String>]) {
-        DispatchQueue.main.sync {
+        DispatchQueue.main.async {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
             component.addPath(path: path)
         }
     }
     
     @objc func clearTracking(_ node: NSNumber) {
-        DispatchQueue.main.sync {
+        DispatchQueue.main.async {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
             component.clearTracking()
         }
     }
     
     @objc func addPathAnimation(_ node: NSNumber, path: [Dictionary<String, String>], speed: Double) {
-        DispatchQueue.main.sync {
+        DispatchQueue.main.async {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
             component.addPathAnimation(path: path, speed: speed)
         }
     }
     
     @objc func zoomToGraphicsLayer(_ node: NSNumber) {
-        DispatchQueue.main.sync {
+        DispatchQueue.main.async {
             let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
             component.zoomToGraphicsLayer()
+        }
+    }
+    
+    @objc func addPointsWithoutAnimation(_ node: NSNumber, pointsDict: [Dictionary<String,Any>]) {
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
+            component.addPoints(pointsDict, animate: false)
+        }
+    }
+    
+    @objc func removePoint(_ node: NSNumber, userId: Int) {
+        DispatchQueue.main.async {
+            let component = self.bridge.uiManager.view(forReactTag: node) as! UaReactNativeArcgisView
+            component.removePoint(userId: userId)
         }
     }
     
@@ -198,7 +212,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     
     func addPoints(_ pointsDict: [Dictionary<String,Any>], animate: Bool) {
         
-        onLog?(["key":"addPoints", "log":"\(pointsDict)"])
+        onLog?(["key":"addPoints", "log":"animate: \(animate) dict: \(pointsDict)"])
         
         if (animate) {
             graphicsLayers().graphicsLayer.graphics.removeAllObjects()
@@ -245,7 +259,9 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
     
     func changeOnlineStatus(userId: Int, onlineStatus: Bool) {
         
-        onLog?(["key":"onlineStatus", "log":"\(userId): \(onlineStatus)"])
+        onLog?(["key":"onlineStatus", "log":"\(userId): online: \(onlineStatus)"])
+        
+        var found = false
         
         for graphic in graphicsLayers().graphicsLayer.graphics {
             guard let graphic = graphic as? AGSGraphic else {
@@ -264,8 +280,12 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
                 continue
             }
             
+            found = true
+            
             graphic.symbol = AGSSimpleMarkerSymbol(style: .circle, color: onlineStatus ? .green : .red, size: markerSymbol.size)
         }
+        
+        onLog?(["key":"onlineStatus", "log":"\(userId): found: \(found)"])
         
     }
     
@@ -301,6 +321,7 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
             
             graphic.geometry = point
         }
+        onLog?(["key":"changeLocation", "log":"found: \(found), userInformation: \(userInformation)"])
         
         if !found {
             
@@ -351,12 +372,49 @@ class UaReactNativeArcgisView : UIView, AGSGeoViewTouchDelegate {
         
     }
     
+    func clearTracking() {
+        
+        onLog?(["key":"clearTracking", "log":""])
+        graphicsLayers().trackingLayer.graphics.removeAllObjects();
+    }
+    
     func zoomToGraphicsLayer() {
+        
+        onLog?(["key":"zoom", "log":""])
         mapView?.setViewpointGeometry(graphicsLayers().graphicsLayer.extent, padding: 50)
     }
     
-    func clearTracking() {
-        graphicsLayers().trackingLayer.graphics.removeAllObjects();
+    func removePoint(userId: Int) {
+        
+        onLog?(["key":"removePoint", "log":"\(userId)"])
+        
+        var found = false
+        var array = [AGSGraphic]();
+        
+        for graphic in graphicsLayers().graphicsLayer.graphics {
+            guard let graphic = graphic as? AGSGraphic else {
+                continue
+            }
+            
+            let attributes = graphic.attributes
+            
+            guard
+                let data = attributes["data"] as? Dictionary<String, Any>,
+                let dataUser = data["user"] as? Dictionary<String, Any>,
+                let dataUserId = dataUser["id"] as? NSNumber,
+                dataUserId.intValue == userId else {
+                continue
+            }
+            
+            found = true
+            array.append(graphic)
+            
+        }
+        
+        graphicsLayers().graphicsLayer.graphics.removeObjects(in: array)
+        
+        onLog?(["key":"removePoint", "log":"\(userId): found: \(found)"])
+        
     }
     
     func geoView(_ geoView: AGSGeoView, didTapAtScreenPoint screenPoint: CGPoint, mapPoint: AGSPoint) {
